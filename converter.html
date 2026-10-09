@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Konverter Animasi — agreius.lab</title>
+<title>agreius Studio — animasi, pesan & file alat</title>
 <link rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,10 +80,69 @@ button:disabled { opacity:.4; cursor:not-allowed; }
 .warn:empty { display:none; }
 .hint.ok { color:#4ade80; }
 .hint.ok:empty { display:none; }
+.usbbtn { width:100%; justify-content:center; margin-top:8px; background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:600; }
+.usbbtn:hover:not(:disabled) { filter:brightness(1.1); border-color:var(--accent); }
 .sdbtn { width:100%; justify-content:center; margin-top:8px; border-color:var(--accent); color:var(--accent); background:transparent; }
 .pesan { max-width:1120px; margin:0 auto; border-top:1px solid var(--line); }
 .pgrid { display:grid; gap:16px; grid-template-columns:minmax(0, 1fr) minmax(0, 1.15fr); align-items:start; padding:0 20px 40px; }
 textarea { width:100%; min-height:200px; resize:vertical; padding:12px; border-radius:10px; border:1px solid var(--line-2); background:var(--field); color:var(--text); font:15px/1.5 ui-monospace, monospace; }
+.klist { list-style:none; padding:0; margin:12px 0 0; font-size:.85rem; }
+.klist li { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
+.klist code { color:var(--muted); }
+.tabs { max-width:1120px; margin:0 auto; padding:24px 20px 0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+.tabs button { position:relative; display:grid; grid-template-columns:44px minmax(0, 1fr); gap:2px 14px; align-items:center; text-align:left;
+               padding:14px 16px; min-height:72px; border-radius:16px; background:var(--panel); border:1px solid var(--line); overflow:hidden; }
+.tabs button::before { content:""; position:absolute; inset:0; opacity:0; transition:opacity .25s; pointer-events:none;
+                       background:radial-gradient(120% 120% at 0% 0%, rgba(255,99,2,.18), transparent 60%); }
+.tabs .ti { grid-row:span 2; width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:var(--field); color:var(--muted); transition:background .2s, color .2s; }
+.tabs .ti .ico { width:22px; height:22px; }
+.tabs b { font-weight:600; font-size:1rem; }
+.tabs small { color:var(--dim); font-size:.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tabs button:hover:not([aria-selected=true]) { border-color:var(--line-2); }
+.tabs [aria-selected=true] { border-color:var(--accent); box-shadow:0 12px 40px -18px rgba(255,99,2,.55); }
+.tabs [aria-selected=true]::before { opacity:1; }
+.tabs [aria-selected=true] .ti { background:var(--accent); color:var(--accent-text); }
+.tab { max-width:1120px; margin:0 auto; }
+.tab > .intro:first-child { padding-top:28px; }
+
+.fm { display:grid; gap:16px; grid-template-columns:minmax(0, 1fr) minmax(0, 1.5fr); grid-template-areas:"dev list" "add list"; grid-template-rows:auto 1fr; align-items:start; padding:0 20px 40px; }
+.fm-dev { grid-area:dev; } .fm-add { grid-area:add; } .fm-list { grid-area:list; }
+.dev { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.fm-add h2 { margin-bottom:10px; }
+.dev .dot { width:10px; height:10px; flex:none; border-radius:50%; background:var(--dim); }
+.dev.on .dot { background:#4ade80; box-shadow:0 0 0 4px rgba(74,222,128,.15); }
+.dev b { display:block; font-weight:600; }
+.dev small { display:block; color:var(--muted); font-size:.82rem; }
+.usage { height:6px; border-radius:99px; background:var(--field); overflow:hidden; margin:14px 0 0; }
+.usage i { display:block; height:100%; width:0; background:var(--accent); transition:width .4s; }
+.fm .drop { padding:20px 14px; margin-top:4px; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
+.chips button { flex:none; min-height:36px; padding:0 12px; border-radius:99px; font-size:.85rem; gap:6px; }
+.chips button i { font-style:normal; color:var(--dim); font-variant-numeric:tabular-nums; }
+.chips [aria-selected=true] { background:var(--text); color:#000; border-color:var(--text); }
+.chips [aria-selected=true] i { color:#555; }
+input[type=search] { width:100%; min-height:40px; padding:8px 12px; border-radius:10px; border:1px solid var(--line-2); background:var(--field); color:var(--text); font:inherit; }
+.sdlist { list-style:none; padding:0; margin:12px 0 0; max-height:min(460px, 60vh); overflow:auto; scrollbar-width:thin;
+          border:1px solid var(--line); border-radius:12px; }
+.sdlist li { display:grid; grid-template-columns:34px minmax(0, 1fr) auto; gap:12px; align-items:center; padding:8px 8px 8px 12px; border-top:1px solid var(--line); }
+.sdlist li:first-child { border-top:0; }
+.sdlist .fi { width:34px; height:34px; border-radius:9px; background:var(--field); display:grid; place-items:center; color:var(--accent); }
+.sdlist .fi .ico { width:17px; height:17px; }
+.sdlist b { display:block; font-weight:500; font-size:.92rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sdlist small { display:flex; flex-wrap:wrap; gap:4px 10px; color:var(--dim); font-size:.78rem; font-variant-numeric:tabular-nums; }
+.sdlist .tag { color:var(--muted); }
+.sdlist .del { min-height:40px; min-width:40px; padding:0; justify-content:center; background:transparent; border-color:transparent; color:var(--dim); }
+.sdlist .del:hover:not(:disabled) { color:#ff5a5a; border-color:#3a1d1d; }
+.sdlist .empty { display:block; text-align:center; padding:40px 16px; color:var(--muted); font-size:.9rem; }
+.sdlist .empty .ico { width:28px; height:28px; color:var(--dim); display:block; margin:0 auto 10px; }
+@media (max-width:860px) { .fm { grid-template-columns:minmax(0, 1fr); grid-template-areas:"dev" "list" "add"; } }
+@media (max-width:640px) {
+  .tabs { gap:8px; padding-top:16px; }
+  .tabs button { grid-template-columns:1fr; justify-items:center; text-align:center; padding:12px 6px; min-height:0; gap:6px; }
+  .tabs .ti { grid-row:auto; width:38px; height:38px; }
+  .tabs b { font-size:.85rem; }
+  .tabs small { display:none; }
+}
 @media (max-width:860px) { .pgrid { grid-template-columns:minmax(0, 1fr); } }
 footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px calc(28px + env(safe-area-inset-bottom)); }
 
@@ -111,19 +170,34 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
   <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></symbol>
   <symbol id="i-sd" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V6l4-4h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2Z"/><path d="M10 6v3M14 6v3M18 6v3"/></symbol>
+  <symbol id="i-usb" viewBox="0 0 24 24"><circle cx="10" cy="7" r="1"/><circle cx="4" cy="20" r="1"/><path d="M4.7 19.3 19 5M21 3l-3 1 2 2ZM9.3 7.7 5 12l4 4h5"/><circle cx="15" cy="16" r="1"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m10 9 5 3-5 3z"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="13" r=".6"/><circle cx="18" cy="11" r=".6"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
 </svg>
 
 <nav>
   <div class="in">
-    <a class="brand" href="index.html"><img src="agreius-logo.png" alt="agreius.lab" width="160" height="22"><span>Konverter</span></a>
-    <a class="back" href="index.html"><svg class="ico"><use href="#i-back"/></svg>Beranda</a>
+    <a class="brand" href="index.html"><img src="agreius-logo.png" alt="agreius.lab" width="160" height="22"><span>Studio</span></a>
+    <a class="back" href="index.html"><svg class="ico"><use href="#i-back"/></svg>Home</a>
   </div>
 </nav>
 
+<div class="tabs" role="tablist" aria-label="Menu Studio">
+  <button type="button" role="tab" data-tab="anim"><span class="ti"><svg class="ico"><use href="#i-film"/></svg></span><b>Animation</b><small>GIF, foto, video, musik</small></button>
+  <button type="button" role="tab" data-tab="pesan"><span class="ti"><svg class="ico"><use href="#i-msg"/></svg></span><b>Message</b><small>Pesan teks berjalan</small></button>
+  <button type="button" role="tab" data-tab="alat"><span class="ti"><svg class="ico"><use href="#i-folder"/></svg></span><b>File Manager</b><small>Isi SD card di alat</small></button>
+</div>
+
+<div class="tab" id="tab-anim" role="tabpanel">
 <div class="intro">
-  <h1>Konverter animasi</h1>
-  <p>GIF, gambar, atau video → <code>.bin</code> untuk OLED 128×64. Video dan musik → <code>.wav</code>. Semua diproses di perangkatmu. <a href="#pesan">Buat pesan teks ↓</a></p>
+  <h1>Buat animasi</h1>
+  <p>GIF, foto, atau video jadi animasi untuk layar OLED 128×64, suaranya ikut jadi <code>.wav</code>. Semua diproses di perangkatmu, tidak di-upload ke mana pun.</p>
 </div>
 
 <main>
@@ -213,16 +287,58 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
       <div class="row" style="grid-template-columns:92px minmax(0,1fr)"><label for="name">Nama file</label><input type="text" id="name" placeholder="contoh: love" autocapitalize="off" autocomplete="off"></div>
       <button class="primary" id="dl" disabled><svg class="ico"><use href="#i-down"/></svg>Download .bin</button>
       <button id="dlWav" type="button" hidden style="width:100%;justify-content:center;margin-top:8px"><svg class="ico"><use href="#i-down"/></svg>Download .wav</button>
-      <button class="sdbtn" id="sdAnim" type="button" disabled hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan langsung ke SD card</button>
+      <button class="usbbtn" id="usbAnim" type="button" disabled hidden><svg class="ico"><use href="#i-usb"/></svg>Kirim ke alat (USB)</button>
+      <button class="sdbtn" id="sdAnim" type="button" disabled hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan ke SD card (card reader)</button>
       <p class="hint ok" id="sdAnimMsg"></p>
-      <p class="hint" id="where">Simpan ke SD card: <code>/anim/nama.bin</code>. Suara: <code>/anim/nama.wav</code> (nama sama). Untuk logo pembuka beri nama <code>boot</code> dan simpan di folder utama SD.</p>
+      <p class="hint" id="where">Simpan ke SD card: <code>/anim/nama.bin</code>. Suara: <code>/anim/nama.wav</code> (nama sama).</p>
     </div>
   </div>
 </main>
+</div>
 
-<section class="pesan" id="pesan">
-  <div class="intro" style="padding-top:8px">
-    <h1>Buat pesan</h1>
+<section class="tab" id="tab-alat" role="tabpanel" hidden>
+  <div class="intro">
+    <h1>File Manager</h1>
+    <p>Lihat, tambah, dan hapus isi SD card di alat lewat kabel USB, tanpa mencabut kartu.</p>
+  </div>
+  <div class="fm">
+    <div class="card fm-dev">
+      <div class="dev" id="dev"><span class="dot"></span><div><b id="devName">Alat belum terhubung</b><small id="devSub">Colok kabel USB-C (HP: kabel OTG), lalu tekan Hubungkan.</small></div></div>
+      <button class="usbbtn" id="usbLs" type="button" hidden><svg class="ico"><use href="#i-usb"/></svg><span>Hubungkan alat</span></button>
+      <p class="hint" id="noUsb" hidden>Butuh Chrome atau Edge di laptop, atau Chrome di HP Android, dan halaman dibuka lewat <b>https://</b>.</p>
+      <div class="usage" id="sdBarWrap" hidden><i id="sdBar"></i></div>
+    </div>
+    <div class="card fm-add">
+      <h2>Tambah file</h2>
+      <label class="drop" id="kDrop">
+        <input type="file" id="kFile" accept=".bin,.wav,.txt" multiple hidden>
+        <svg class="ico"><use href="#i-up"/></svg>
+        <strong>Pilih atau seret file</strong>
+        .bin dan .wav → Animasi · .txt → Pesan
+      </label>
+      <ul class="klist" id="kList"></ul>
+      <button class="usbbtn" id="usbKirim" type="button" disabled hidden><svg class="ico"><use href="#i-usb"/></svg>Kirim ke alat (USB)</button>
+      <button class="sdbtn" id="sdKirim" type="button" disabled hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan ke SD card (card reader)</button>
+      <p class="hint ok" id="kMsg"></p>
+    </div>
+    <div class="card fm-list">
+      <div class="chips" role="tablist" aria-label="Jenis file" id="chips">
+        <button type="button" role="tab" data-k="anim" aria-selected="true">Animasi <i>–</i></button>
+        <button type="button" role="tab" data-k="pesan">Pesan <i>–</i></button>
+        <button type="button" role="tab" data-k="sfx">Suara efek <i>–</i></button>
+        <button type="button" role="tab" data-k="game">Game <i>–</i></button>
+      </div>
+      <input type="search" id="fmQ" placeholder="Cari nama file…" aria-label="Cari nama file" autocomplete="off">
+      <ul class="sdlist" id="sdList"><li class="empty"><svg class="ico"><use href="#i-folder"/></svg>Hubungkan alat untuk melihat isi SD card.</li></ul>
+      <p class="hint" id="fmNote"></p>
+      <p class="hint ok" id="lsMsg"></p>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-pesan" role="tabpanel" hidden>
+  <div class="intro">
+    <h1>Tulis pesan</h1>
     <p>Tulis pesan untuk mode <b>Pesan</b>. Tampil huruf demi huruf, sama seperti di alat.</p>
   </div>
   <div class="pgrid">
@@ -233,7 +349,8 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
       <p class="warn" id="pWarn"></p>
       <div class="row" style="grid-template-columns:92px minmax(0,1fr)"><label for="pName">Nama file</label><input type="text" id="pName" placeholder="contoh: ultah" autocapitalize="off" autocomplete="off"></div>
       <button class="primary" id="pDl" type="button"><svg class="ico"><use href="#i-down"/></svg>Download .txt</button>
-      <button class="sdbtn" id="sdPesan" type="button" hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan langsung ke SD card</button>
+      <button class="usbbtn" id="usbPesan" type="button" hidden><svg class="ico"><use href="#i-usb"/></svg>Kirim ke alat (USB)</button>
+      <button class="sdbtn" id="sdPesan" type="button" hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan ke SD card (card reader)</button>
       <p class="hint ok" id="sdPesanMsg"></p>
       <p class="hint" id="pWhere">Simpan ke SD card: <code>/pesan/nama.txt</code>. Suara latar opsional: <code>/pesan/nama.wav</code>.</p>
     </div>
@@ -577,7 +694,7 @@ function useSources(srcs, fileName) {
   if (c0[3] > 127) $('key').value = '#' + [...c0.subarray(0, 3)].map(v => v.toString(16).padStart(2, '0')).join('');
   setName(fileName);
   syncOutputs();
-  $('play').disabled = $('dl').disabled = $('sdAnim').disabled = false;
+  $('play').disabled = $('dl').disabled = $('sdAnim').disabled = $('usbAnim').disabled = false;
   process(); tick();
 }
 
@@ -601,7 +718,7 @@ async function loadMedia(file) {
       await once(v, 'loadedmetadata');
       if (!isFinite(v.duration)) { const d = once(v, 'durationchange'); v.currentTime = 1e9; await d; }  // webm rekaman browser: durasi belum tertulis
       duration = v.duration;
-    } catch (e) { $('err').textContent = 'Gagal membuka video: ' + e.message; return; }
+    } catch (e) { $('err').textContent = await videoError(file); return; }
     URL.revokeObjectURL(v.src);
   }
   media = { file, video, duration };
@@ -627,15 +744,25 @@ async function extractMedia() {
     }
     wav = await audioWav(media.file, start, len, $('mNorm').checked, media.video);
     $('dlWav').hidden = !wav;
-    if (wav) $('sdAnim').disabled = false;
+    if (wav) $('sdAnim').disabled = $('usbAnim').disabled = false;
     const t = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
     $('mInfo').textContent = (media.video ? `Video ${t(media.duration)} · ${Math.round(len * fps)} frame` : `Musik · ${wav ? ((wav.length - 44) / 2 / RATE).toFixed(1) : 0} detik`)
       + (wav ? ` · suara ${(wav.length / 1024).toFixed(0)} KB` : ' · tanpa suara');
     $('err').textContent = !wav && !media.video ? 'Suara tidak bisa dibaca. Coba MP3 atau M4A.' : '';
   } catch (e) {
-    $('err').textContent = 'Gagal memproses: ' + e.message;
+    $('err').textContent = media.video && /format/.test(e.message) ? await videoError(media.file) : 'Gagal memproses: ' + e.message;
   }
   busy.disabled = false;
+}
+
+// Browser hanya bilang "gagal". Baca kode codec di dalam file supaya pesannya jelas.
+async function videoError(file) {
+  const part = async (a, b) => new TextDecoder('latin1').decode(await file.slice(a, b).arrayBuffer());
+  const t = await part(0, 4 << 20) + await part(Math.max(0, file.size - (4 << 20)), file.size);
+  const c = [['hvc1', 'HEVC (H.265)'], ['hev1', 'HEVC (H.265)'], ['mp4v', 'MPEG-4 lama'], ['avc1', 'H.264'], ['av01', 'AV1'], ['vp09', 'VP9']].find(([k]) => t.includes(k));
+  if (c && c[1].startsWith('HEVC'))
+    return 'Video ini memakai codec HEVC (H.265) yang tidak bisa dibaca browser ini. Solusi: kirim videonya lewat WhatsApp ke diri sendiri lalu simpan (otomatis jadi H.264), atau ubah setelan kamera HP ke "Paling kompatibel" / H.264, lalu coba lagi.';
+  return `Browser tidak bisa membaca video ini${c ? ' (codec ' + c[1] + ')' : ''}. Coba ubah ke MP4 H.264, misalnya dengan kirim lewat WhatsApp ke diri sendiri lalu simpan.`;
 }
 
 async function videoFrames(file, start, len, fps, duration) {
@@ -715,9 +842,7 @@ $('tint').onclick = e => {
 };
 $('name').oninput = () => {
   const n = cleanName($('name').value);
-  $('where').innerHTML = n === 'boot'
-    ? 'Logo pembuka: simpan sebagai <code>/boot.bin</code> di folder utama SD. Jingle: <code>/boot.wav</code>.'
-    : `Simpan ke SD card: <code>/anim/${n}.bin</code>. Suara: <code>/anim/${n}.wav</code> (nama sama).`;
+  $('where').innerHTML = `Simpan ke SD card: <code>/anim/${n}.bin</code>. Suara: <code>/anim/${n}.wav</code> (nama sama).`;
 };
 const save = (data, ext, type) => {
   const a = document.createElement('a');
@@ -751,14 +876,224 @@ async function sdSave(files, msgEl) {  // files: [[folder ('' = utama), nama, da
     if (e.name !== 'AbortError') { sdDir = null; $(msgEl).textContent = ''; alert('Gagal menyimpan ke SD card: ' + e.message); }
   }
 }
-const canSd = 'showDirectoryPicker' in window;
-$('sdAnim').hidden = $('sdPesan').hidden = !canSd;
-$('sdAnim').onclick = () => {
-  const n = cleanName($('name').value || baseName), folder = n === 'boot' ? '' : 'anim', files = [];
+// ---------- kirim/baca/hapus file di alat lewat USB (protokol: src/usbfile.cpp) ----------
+// Laptop: Web Serial. Android: WebUSB lewat polyfill yang sama dengan installer (tasmota-esp-web-tools).
+const USB_POLYFILL = 'https://unpkg.com/tasmota-webserial-esptool@9.4.1/js/webusb-serial.js';
+const android = /Android/i.test(navigator.userAgent);
+let usb = null, usbBusy = false;
+async function usbLine(ms, re) {  // tunggu baris balasan yang cocok; baris log lain dari alat diabaikan
+  const end = Date.now() + ms;
+  for (;;) {
+    let i;
+    while ((i = usb.text.indexOf('\n')) >= 0) {
+      const l = usb.text.slice(0, i).replace(/\r$/, ''); usb.text = usb.text.slice(i + 1);
+      if (re.test(l)) return l;
+    }
+    const left = end - Date.now();
+    if (left <= 0) return null;
+    usb.pending ||= usb.reader.read();
+    const r = await Promise.race([usb.pending, new Promise(ok => setTimeout(ok, left, null))]);
+    if (!r) return null;
+    usb.pending = null;
+    if (r.done) throw new Error('koneksi USB terputus');
+    usb.text += usb.dec.decode(r.value, { stream: true });
+  }
+}
+const usbWrite = d => usb.writer.write(typeof d === 'string' ? new TextEncoder().encode(d) : d);
+async function usbClose() {
+  const u = usb; usb = null;
+  if (!u) return;
+  try { await u.reader.cancel(); u.reader.releaseLock(); u.writer.releaseLock(); await u.port.close(); } catch {}
+  devStatus();
+}
+async function usbOpen(msgEl) {
+  if (usb) return;
+  const port = android && navigator.usb || !navigator.serial
+    ? await (await import(USB_POLYFILL)).requestSerialPort() : await navigator.serial.requestPort();
+  await port.open({ baudRate: 115200, bufferSize: 8192 });
+  try { await port.setSignals({ dataTerminalReady: false, requestToSend: false }); } catch {}
+  usb = { port, reader: port.readable.getReader(), writer: port.writable.getWriter(), dec: new TextDecoder(), text: '', pending: null };
+  for (let i = 0; i < 30; i++) {  // alat mungkin baru restart dan masih menampilkan logo: ulangi sampai ±15 detik
+    $(msgEl).textContent = 'Menghubungkan ke alat…';
+    await usbWrite('@HI\n');
+    const l = await usbLine(500, /^AGL /);
+    if (l) { [, usb.ver, usb.fm] = l.split(' '); devStatus(); return; }
+  }
+  await usbClose();
+  throw new Error('alat tidak menjawab. Pastikan firmware terbaru sudah terpasang (halaman utama → Install firmware) dan port yang dipilih benar.');
+}
+async function usbTask(msgEl, fn) {  // satu perintah USB pada satu waktu
+  if (usbBusy) return;
+  usbBusy = true;
+  const btns = document.querySelectorAll('.usbbtn, .sdlist button'); btns.forEach(b => b.disabled = true);
+  try { await usbOpen(msgEl); await fn(); }
+  catch (e) {
+    await usbClose();
+    $(msgEl).textContent = '';
+    if (e.name !== 'NotFoundError') alert('Gagal: ' + e.message);  // NotFoundError = batal pilih port
+  }
+  usbBusy = false;
+  btns.forEach(b => b.disabled = false);
+  if (!out.length && !wav) $('usbAnim').disabled = true;
+  if (!kFiles.length) $('usbKirim').disabled = true;
+}
+// ---------- File Manager: isi SD card di alat ----------
+let fm = null, fmKind = 'anim';
+const FM_ICON = { anim: 'i-film', pesan: 'i-msg', sfx: 'i-music', game: 'i-game' };
+const fmtSize = b => b >= 1 << 30 ? (b / (1 << 30)).toFixed(1) + ' GB' : b >= 1 << 20 ? (b / (1 << 20)).toFixed(1) + ' MB' : Math.ceil(b / 1024) + ' KB';
+
+function devStatus(sub) {
+  $('dev').classList.toggle('on', !!usb);
+  $('devName').textContent = usb ? `agreius Player v${usb.ver || '?'} terhubung` : 'Alat belum terhubung';
+  $('devSub').textContent = sub || (usb ? 'Siap. Tambah atau hapus file kapan saja.' : 'Colok kabel USB-C (HP: kabel OTG), lalu tekan Hubungkan.');
+  $('usbLs').lastChild.textContent = usb ? 'Muat ulang' : 'Hubungkan alat';
+}
+
+// Kelompokkan per nama: animasi = .bin + .wav (suara) jadi satu baris
+function fmModel(files, games) {
+  const g = { anim: new Map(), pesan: new Map(), sfx: new Map() };
+  for (const [path, size] of files) {
+    const m = path.match(/^\/(anim|pesan|sfx)\/(.+)\.(bin|wav|txt)$/);
+    if (!m) continue;
+    const it = g[m[1]].get(m[2]) || { name: m[2], paths: [], size: 0 };
+    it.paths.push(path); it.size += size; it[m[3]] = size;
+    g[m[1]].set(m[2], it);
+  }
+  const sort = mp => [...mp.values()].sort((a, b) => a.name.localeCompare(b.name));
+  return { anim: sort(g.anim), pesan: sort(g.pesan), sfx: sort(g.sfx), game: games.map(name => ({ name, paths: [] })) };
+}
+
+function fmRender() {
+  document.querySelectorAll('#chips button').forEach(b => {
+    b.setAttribute('aria-selected', b.dataset.k === fmKind);
+    b.querySelector('i').textContent = fm ? fm[b.dataset.k].length : '–';
+  });
+  $('fmNote').innerHTML = fmKind === 'game'
+    ? 'Game tertanam di firmware, jadi tidak bisa ditambah lewat SD card. Game baru datang lewat <a href="index.html#install">update firmware</a>.' : '';
+  if (!fm) return;
+  const q = $('fmQ').value.trim().toLowerCase(), list = $('sdList');
+  const items = fm[fmKind].filter(it => it.name.toLowerCase().includes(q));
+  list.textContent = '';
+  for (const it of items) {
+    const li = document.createElement('li'), txt = document.createElement('div'), b = document.createElement('b'), meta = document.createElement('small');
+    li.innerHTML = `<span class="fi"><svg class="ico"><use href="#${FM_ICON[fmKind]}"/></svg></span>`;
+    b.textContent = it.name.replace(/_/g, ' ');
+    b.title = it.paths.join(', ');
+    const tags = fmKind === 'game' ? ['bawaan firmware']
+      : fmKind === 'anim' ? [it.bin ? fmtSize(it.bin) : 'tanpa gambar', it.wav ? '♪ ada suara' : 'tanpa suara']
+      : [fmtSize(it.size), ...(it.wav && it.txt ? ['♪ ada suara'] : [])];
+    tags.forEach((t, i) => { const e = document.createElement('span'); e.textContent = t; if (i) e.className = 'tag'; meta.append(e); });
+    txt.append(b, meta); li.append(txt);
+    if (it.paths.length) {
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Hapus ' + it.name);
+      del.innerHTML = '<svg class="ico"><use href="#i-trash"/></svg>';
+      del.onclick = () => confirm(`Hapus "${it.name}"${it.paths.length > 1 ? ' (gambar + suara)' : ''} dari SD card?`) && usbTask('lsMsg', async () => {
+        for (const p of it.paths) {
+          await usbWrite(`@DEL ${p}\n`);
+          const r = await usbLine(5000, /^(OK|ERR)/);
+          if (r !== 'OK') throw new Error(r ? r.slice(4) : 'alat tidak menjawab');
+        }
+        await sdLs();
+        $('lsMsg').textContent = 'Dihapus: ' + it.name;
+      });
+      li.append(del);
+    } else li.append(document.createElement('span'));
+    list.append(li);
+  }
+  if (!items.length) list.innerHTML = `<li class="empty"><svg class="ico"><use href="#i-folder"/></svg>${q ? 'Tidak ada yang cocok dengan "' + q.replace(/[<>&"]/g, '') + '".' : 'Belum ada file di sini.'}</li>`;
+}
+
+async function sdLs() {
+  if (usb.fm !== 'fm') throw new Error('firmware di alat masih versi lama. Install ulang dulu di halaman utama (Install firmware) supaya daftar file lengkap.');
+  const files = [], games = [];
+  for (let start = 0; ;) {  // per halaman 40 file: antrean USB di alat tidak pernah penuh
+    await usbWrite(`@LS ${start}\n`);
+    for (;;) {
+      const l = await usbLine(30000, /^(F |G |MORE |END |ERR)/);  // kartu besar: hitung ruang kosong bisa beberapa detik
+      if (!l) throw new Error('alat tidak menjawab');
+      if (l.startsWith('ERR')) throw new Error(l.slice(4));
+      if (l.startsWith('F ')) { const sp = l.lastIndexOf(' '); files.push([l.slice(2, sp), +l.slice(sp + 1)]); continue; }
+      if (l.startsWith('G ')) { games.push(l.slice(2)); continue; }
+      if (l.startsWith('MORE ')) { start = +l.slice(5); $('lsMsg').textContent = `Membaca isi SD card… ${files.length} file`; break; }
+      const [, used, total] = l.split(' ').map(Number);
+      fm = fmModel(files, games);
+      $('sdBarWrap').hidden = false;
+      $('sdBar').style.width = (total ? used * 100 / total : 0) + '%';
+      devStatus(`SD card: ${fmtSize(used)} terpakai dari ${fmtSize(total)}`);
+      $('lsMsg').textContent = '';
+      fmRender();
+      return;
+    }
+  }
+}
+function usbSend(files, msgEl) {  // files: [[folder ('' = utama), nama, Uint8Array]]
+  return usbTask(msgEl, async () => {
+    for (const [folder, name, data] of files) {
+      const path = '/' + (folder ? folder + '/' : '') + name;
+      await usbWrite(`@PUT ${path} ${data.length}\n`);
+      let l = await usbLine(5000, /^(OK|ERR)/);
+      if (l !== 'OK') throw new Error(l ? l.slice(4) : 'alat tidak menjawab');
+      for (let o = 0; o < data.length; o += 1024) {
+        await usbWrite(data.subarray(o, o + 1024));
+        l = await usbLine(5000, /^(K|ERR)/);
+        if (l !== 'K') throw new Error(l ? l.slice(4) : 'alat berhenti menjawab');
+        if (o % 32768 === 0) $(msgEl).textContent = `Mengirim ${path}… ${Math.round(o * 100 / data.length)}%`;
+      }
+      l = await usbLine(5000, /^(DONE|ERR)/);
+      if (l !== 'DONE') throw new Error(l ? l.slice(4) : 'alat tidak mengonfirmasi');
+    }
+    await sdLs();  // daftar isi SD langsung ikut diperbarui
+    $(msgEl).textContent = 'Terkirim ke alat: ' + files.map(([f, n]) => '/' + (f ? f + '/' : '') + n).join(', ') + '. Buka menu Animasi/Pesan di alat.';
+  });
+}
+
+const canSd = 'showDirectoryPicker' in window, canUsb = isSecureContext && ('serial' in navigator || 'usb' in navigator);
+$('sdAnim').hidden = $('sdPesan').hidden = $('sdKirim').hidden = !canSd;
+$('usbAnim').hidden = $('usbPesan').hidden = $('usbKirim').hidden = $('usbLs').hidden = !canUsb;
+$('noUsb').hidden = canUsb;
+$('usbLs').onclick = () => usbTask('lsMsg', async () => { $('lsMsg').textContent = 'Membaca isi SD card…'; await sdLs(); });
+$('chips').onclick = e => { const b = e.target.closest('button'); if (b) { fmKind = b.dataset.k; fmRender(); } };
+$('fmQ').oninput = fmRender;
+
+// ---------- menu tab: Animation · Message · File Manager ----------
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach(s => { s.hidden = s.id !== 'tab-' + t; });
+  document.querySelectorAll('.tabs [data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t));
+  history.replaceState(null, '', '#' + t);
+}
+document.querySelector('.tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); };
+showTab({ pesan: 'pesan', alat: 'alat', kirim: 'alat' }[location.hash.slice(1)] || 'anim');
+const animFiles = () => {
+  const n = cleanName($('name').value || baseName), folder = 'anim', files = [];
   if (out.length) files.push([folder, n + '.bin', packBin(out)]);
   if (wav) files.push([folder, n + '.wav', wav]);
-  if (files.length) sdSave(files, 'sdAnimMsg');
+  return files;
 };
+$('sdAnim').onclick = () => { const f = animFiles(); if (f.length) sdSave(f, 'sdAnimMsg'); };
+$('usbAnim').onclick = () => { const f = animFiles(); if (f.length) usbSend(f, 'sdAnimMsg'); };
+
+// file siap pakai: .bin/.wav → /anim, .txt → /pesan
+let kFiles = [];
+async function kLoad(list) {
+  kFiles = [];
+  for (const f of list) {
+    const m = f.name.toLowerCase().match(/^(.*)\.(bin|wav|txt)$/);
+    if (!m) continue;
+    const n = cleanName(m[1]), folder = m[2] === 'txt' ? 'pesan' : 'anim';
+    kFiles.push([folder, n + '.' + m[2], new Uint8Array(await f.arrayBuffer())]);
+  }
+  $('kList').innerHTML = kFiles.map(([f, n, d]) => `<li><span>${n}</span><code>/${f ? f + '/' : ''}${n} · ${(d.length / 1024).toFixed(0)} KB</code></li>`).join('');
+  $('usbKirim').disabled = $('sdKirim').disabled = !kFiles.length;
+  $('kMsg').textContent = kFiles.length < list.length ? 'Sebagian file dilewati: hanya .bin, .wav, .txt.' : '';
+}
+$('kFile').addEventListener('change', e => kLoad([...e.target.files]));
+const kDrop = $('kDrop');
+['dragenter', 'dragover'].forEach(t => kDrop.addEventListener(t, e => { e.preventDefault(); kDrop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => kDrop.addEventListener(t, e => { e.preventDefault(); kDrop.classList.remove('over'); }));
+kDrop.addEventListener('drop', e => kLoad([...e.dataTransfer.files]));
+$('usbKirim').onclick = () => usbSend(kFiles, 'kMsg');
+$('sdKirim').onclick = () => sdSave(kFiles, 'kMsg');
 
 // ---------- pembuat pesan ----------
 const pv = $('pView'), pctx = pv.getContext('2d');
@@ -798,7 +1133,9 @@ $('pReplay').onclick = () => pUpdate(true);
 $('pName').oninput = () => { const n = cleanName($('pName').value); $('pWhere').innerHTML = `Simpan ke SD card: <code>/pesan/${n}.txt</code>. Suara latar opsional: <code>/pesan/${n}.wav</code>.`; };
 const pData = () => new TextEncoder().encode(pClean($('pText').value).replace(/\r\n?/g, '\n'));
 $('pDl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([pData()], { type: 'text/plain' })); a.download = cleanName($('pName').value || 'pesan') + '.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
-$('sdPesan').onclick = () => sdSave([['pesan', cleanName($('pName').value || 'pesan') + '.txt', pData()]], 'sdPesanMsg');
+const pesanFile = () => [['pesan', cleanName($('pName').value || 'pesan') + '.txt', pData()]];
+$('sdPesan').onclick = () => sdSave(pesanFile(), 'sdPesanMsg');
+$('usbPesan').onclick = () => usbSend(pesanFile(), 'sdPesanMsg');
 pUpdate(false);
 
 </script>

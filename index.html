@@ -28,13 +28,13 @@
   .wrap { max-width:1040px; margin:0 auto; padding:0 max(20px, env(safe-area-inset-left)); }
   .ico { width:20px; height:20px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 
-  /* bar ikon sosial kecil di paling atas */
-  .topbar { border-bottom:1px solid var(--line); font-size:.78rem; color:var(--dim); }
-  .topbar .wrap { display:flex; align-items:center; justify-content:space-between; height:40px; }
-  .soc { display:flex; gap:6px; }
-  .soc a { width:28px; height:28px; border-radius:7px; background:#fff; display:grid; place-items:center; transition:transform .15s; }
-  .soc a:hover { transform:translateY(-1px); }
-  .soc img { width:19px; height:19px; }
+  /* ikon sosial: garis tipis seragam, warna merek saat disentuh */
+  .soc { display:flex; align-items:center; gap:4px; }
+  .soc a { width:36px; height:36px; border-radius:50%; display:grid; place-items:center; color:var(--mute); transition:color .2s, background .2s; }
+  .soc a:hover { color:var(--b); background:#111; }
+  .soc .ico { width:18px; height:18px; }
+  nav .soc { margin-left:10px; padding-left:12px; border-left:1px solid var(--line-2); }
+  nav .right { display:flex; align-items:center; }
   .next { margin:0 0 22px; }
   .next img { display:block; width:100%; height:auto; border-radius:10px; border:1px solid var(--line); }
   .next figcaption { margin-top:12px; color:var(--mute); font-size:.92rem; }
@@ -99,6 +99,10 @@
   .btn.primary:hover { filter:brightness(1.1); }
   .btn.ghost { background:transparent; color:var(--fg); border-color:var(--line-2); }
   .btn.ghost:hover { border-color:#555; background:#0d0d0d; }
+  .btn.wa { background:#25d366; color:#04210f; }
+  .btn.wa:hover { filter:brightness(1.08); }
+  .btn .bi { width:26px; height:26px; flex:none; border-radius:7px; background:#fff; display:grid; place-items:center; }
+  .btn .bi img { width:19px; height:19px; }
   .warn { margin:0; max-width:40ch; padding:12px 18px; border:1px solid var(--line-2); border-radius:12px; color:var(--mute); font-size:.92rem; }
   .warn b { color:var(--fg); }
 
@@ -222,6 +226,7 @@
     section { padding:64px 0; }
     .card { padding:22px; }
     nav ul a { padding:10px 7px; font-size:.82rem; }
+    nav .nsoc { display:none; }
     .cta esp-web-install-button, .cta .btn { display:flex; width:100%; }
     .badges { gap:6px; } .badges li { padding:5px 10px 5px 8px; font-size:.75rem; gap:5px; }
     .device { margin-top:48px; }
@@ -251,30 +256,25 @@
   <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12h10M12 7v10"/><circle cx="7" cy="7" r=".6"/><circle cx="17" cy="7" r=".6"/><circle cx="7" cy="17" r=".6"/><circle cx="17" cy="17" r=".6"/></symbol>
   <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7Z"/><path d="M3.3 7 12 12l8.7-5M12 22V12M7.5 4.3l9 5.2"/></symbol>
   <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
-  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M16 13H8M16 17H8M10 9H8"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-devices" viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="10" rx="1.5"/><path d="M1 17h16"/><rect x="17" y="9" width="6" height="11" rx="1.5"/></symbol>
   <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.2"/></symbol>
+  <symbol id="s-yt" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/></symbol>
+  <symbol id="s-tt" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.6 2.4 4.6 5 5"/></symbol>
+  <symbol id="s-sp" viewBox="0 0 24 24"><path d="M4.5 8h15l-1.1 11.2a2 2 0 0 1-2 1.8H7.6a2 2 0 0 1-2-1.8Z"/><path d="M9 8a3 3 0 0 1 6 0M14 12.2c-.6-.6-1.3-.9-2-.9-1 0-1.8.6-1.8 1.4 0 1.9 3.8 1.2 3.8 3.2 0 .8-.8 1.5-1.9 1.5-.8 0-1.6-.3-2.1-.9"/></symbol>
+  <symbol id="s-wa" viewBox="0 0 24 24"><path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.3Z"/><path d="M9 8.5c-.3 3 3.2 6.6 6.4 6.4l.9-1.6-2-1.1-1 .9a4 4 0 0 1-2-2l.9-1-1.1-2Z"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8z"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2.5a1.5 1.5 0 0 0-1 2.6c.6.6.5 3.4-2.5 3.4Z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
 </svg>
 
-<div class="topbar">
-  <div class="wrap">
-    <span>Follow agreius.lab</span>
-    <div class="soc">
-      <a href="https://youtube.com/@agreius_lab" target="_blank" rel="noopener" aria-label="YouTube @agreius_lab"><img src="icons/youtube.png" alt="" width="96" height="96"></a>
-      <a href="https://www.tiktok.com/@_agreius_" target="_blank" rel="noopener" aria-label="TikTok @_agreius_"><img src="icons/tiktok.png" alt="" width="96" height="96"></a>
-      <a href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener" aria-label="Shopee agreius.lab"><img src="icons/shopee.png" alt="" width="96" height="96"></a>
-      <a href="https://wa.me/6283824370118" target="_blank" rel="noopener" aria-label="WhatsApp agreius.lab"><img src="icons/whatsapp.png" alt="" width="96" height="96"></a>
-    </div>
-  </div>
-</div>
 <nav id="nav">
   <div class="wrap">
     <a class="mark" href="#top" aria-label="agreius.lab, ke atas"><img src="favicon.png" alt="" width="26" height="26"></a>
+    <div class="right">
     <ul>
       <li><a href="#rakit">Build</a></li>
       <li><a href="#install">Install</a></li>
@@ -282,6 +282,13 @@
       <li><a href="#dukung">Donate</a></li>
       <li><a href="converter.html">Studio</a></li>
     </ul>
+      <div class="soc nsoc">
+        <a style="--b:#ff2d55" href="https://youtube.com/@agreius_lab" target="_blank" rel="noopener" aria-label="YouTube @agreius_lab"><svg class="ico"><use href="#s-yt"/></svg></a>
+        <a style="--b:#25f4ee" href="https://www.tiktok.com/@_agreius_" target="_blank" rel="noopener" aria-label="TikTok @_agreius_"><svg class="ico"><use href="#s-tt"/></svg></a>
+        <a style="--b:#ff6a3d" href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener" aria-label="Shopee agreius.lab"><svg class="ico"><use href="#s-sp"/></svg></a>
+        <a style="--b:#25d366" href="https://wa.me/6283824370118" target="_blank" rel="noopener" aria-label="WhatsApp agreius.lab"><svg class="ico"><use href="#s-wa"/></svg></a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -296,7 +303,7 @@
         <g clip-path="url(#cupIn)"><rect class="liq" x="6" y="17" width="24" height="18"/></g>
         <path class="cup" d="M8 17h20v9a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7zM28 20h2.5a3.5 3.5 0 0 1 0 7H28M6 36h24"/>
       </svg>
-      <span><b id="cofT">Kopi developer: 0%</b><small id="cofS">tinggal ampas, kodingnya mulai ngantuk</small></span>
+      <span><b id="cofT">Kopi developer: 0%</b><small id="cofS">tinggal ampas, kang ngodingnya mulai ngantuk</small></span>
     </button>
     <p class="lead">Hadiah kecil yang hidup: animasi, lagu, game, dan jam di layar OLED.</p>
     <div class="cta">
@@ -330,9 +337,12 @@
         <div class="card reveal"><svg class="ico"><use href="#i-film"/></svg><h3>Animasi dari gambarmu</h3><p>Ubah GIF, foto, atau video jadi animasi (suara video ikut jadi .wav) di <a href="converter.html">agreius Studio</a> gratis di web ini. Kirim ke alat lewat USB atau salin ke SD card, langsung terbaca otomatis tanpa install ulang. Sudah termasuk 40+ animasi siap pakai.</p></div>
         <div class="card reveal"><svg class="ico"><use href="#i-game"/></svg><h3>9 game</h3><p>Flappy Bird, Dino, Snake, Pong, Breakout, dan lainnya. Main pakai dua tombol.</p></div>
         <div class="card reveal"><svg class="ico"><use href="#i-bot"/></svg><h3>Bot yang hidup</h3><p>Sepasang mata yang berkedip, melirik, dan bereaksi saat dielus.</p></div>
-        <div class="card reveal"><svg class="ico"><use href="#i-clock"/></svg><h3>Jam &amp; notifikasi HP</h3><p>Sambung ke HP lewat Bluetooth dengan app Chronos untuk jam, cuaca, dan notifikasi.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-clock"/></svg><h3>Jam, cuaca &amp; notifikasi</h3><p>Sambung ke HP lewat Bluetooth dengan app Chronos. Jam dan cuaca selalu sinkron, notifikasi WhatsApp dan lainnya langsung muncul.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-nav"/></svg><h3>Navigasi Google Maps</h3><p>Mulai rute di HP, layar otomatis menampilkan arah belok, jarak, dan nama jalan. Tombol 1 untuk pindah ke jam dan kembali lagi.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-palette"/></svg><h3>5 tema tampilan</h3><p>Modern, HUD, Zen, Otomotif, dan Angkasa untuk jam, navigasi, dan notifikasi. Pilih di <a href="converter.html#tema">Studio</a> atau langsung di alat.</p></div>
         <div class="card reveal"><svg class="ico"><use href="#i-msg"/></svg><h3>Pesan berefek ketik</h3><p>Tulis pesan sendiri di file teks, muncul huruf demi huruf.</p></div>
-        <div class="card reveal"><svg class="ico"><use href="#i-music"/></svg><h3>Suara sendiri</h3><p>Taruh file <code>.wav</code> dengan nama yang sama seperti animasinya, suaranya ikut diputar otomatis.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-sd"/></svg><h3>File Manager lewat USB</h3><p>Lihat, tambah, dan hapus isi SD card langsung dari web, dari laptop atau HP Android, tanpa mencabut kartu.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-music"/></svg><h3>Lirik &amp; suara sendiri</h3><p>Animasi lirik lagu berjalan bersama musiknya. Taruh <code>.wav</code> dengan nama yang sama seperti animasinya, suaranya ikut diputar.</p></div>
       </div>
     </div>
   </section>
@@ -372,8 +382,8 @@
         </div>
       </div>
       <div class="cta-row reveal">
-        <a class="btn primary" href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener"><svg class="ico"><use href="#i-bag"/></svg>Lihat di Shopee</a>
-        <a class="btn ghost" href="https://wa.me/6283824370118?text=Halo%20agreius.lab%2C%20saya%20mau%20pesan%20agreius%20Player%20%28kit%20/%20siap%20pakai%29." target="_blank" rel="noopener"><svg class="ico"><use href="#i-chat"/></svg>Pesan via WhatsApp</a>
+        <a class="btn primary" href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener"><span class="bi"><img src="icons/shopee.png" alt="" width="96" height="96"></span>Lihat di Shopee</a>
+        <a class="btn wa" href="https://wa.me/6283824370118?text=Halo%20agreius.lab%2C%20saya%20mau%20pesan%20agreius%20Player%20%28kit%20/%20siap%20pakai%29." target="_blank" rel="noopener"><span class="bi"><img src="icons/whatsapp.png" alt="" width="96" height="96"></span>Pesan via WhatsApp</a>
       </div>
       <div class="card shout reveal" id="lisensi">
         <svg class="ico"><use href="#i-doc"/></svg>
@@ -418,6 +428,7 @@
         <ul>
           <li>Port tidak muncul: ganti kabel. Banyak kabel hanya untuk mengecas.</li>
           <li>Gagal tersambung: tahan <b>BOOT</b>, tekan lalu lepas <b>RESET</b>, lepas BOOT, lalu coba Install lagi.</li>
+          <li>ESP32-C3 baru dan laptop berbunyi terus (port muncul-hilang): biarkan tetap tercolok USB, tekan dan tahan <b>RESET</b> + <b>BOOT</b> bersamaan sekitar <b>10 detik</b>, lepas RESET dulu lalu BOOT, kemudian klik Install lagi.</li>
           <li>Jangan menahan Tombol 2 (GPIO8) saat install.</li>
           <li>Tutup aplikasi lain yang memakai port, misalnya Arduino IDE atau Serial Monitor.</li>
           <li>HP Android: pastikan fitur OTG aktif (di beberapa HP ada di Pengaturan).</li>
@@ -518,6 +529,12 @@
 <footer>
   <div class="wrap">
     <img src="agreius-logo.png" alt="agreius.lab" width="131" height="18">
+    <div class="soc">
+        <a style="--b:#ff2d55" href="https://youtube.com/@agreius_lab" target="_blank" rel="noopener" aria-label="YouTube @agreius_lab"><svg class="ico"><use href="#s-yt"/></svg></a>
+        <a style="--b:#25f4ee" href="https://www.tiktok.com/@_agreius_" target="_blank" rel="noopener" aria-label="TikTok @_agreius_"><svg class="ico"><use href="#s-tt"/></svg></a>
+        <a style="--b:#ff6a3d" href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener" aria-label="Shopee agreius.lab"><svg class="ico"><use href="#s-sp"/></svg></a>
+        <a style="--b:#25d366" href="https://wa.me/6283824370118" target="_blank" rel="noopener" aria-label="WhatsApp agreius.lab"><svg class="ico"><use href="#s-wa"/></svg></a>
+      </div>
     <span>© 2026 agreius.lab · Gratis untuk pemakaian pribadi · <a href="LICENSE.txt">Lisensi</a> · <a href="#lisensi">Lisensi komersial</a></span>
   </div>
 </footer>
@@ -578,23 +595,24 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 // Layar contoh: putar beberapa animasi .bin (format AGL1, sama dengan di SD card)
-const DEMOS = ['jj_bot_dj', 'jj_pinguin_joget', 'love_you', 'kembang_api', 'lucu_ufo'];
+const DEMOS = [['bruno', 'lirik lagu berjalan'], ['lagu_bintangku', 'karaoke: Bintangku'], ['jj_teks_mantap', 'teks kinetik'],
+               ['kata_gombal', 'kata gombal'], ['lagu_jingle_bells', 'karaoke: Jingle Bells'], ['jj_bot_dj', 'bot DJ']];
 const cv = document.getElementById('oled'), cx = cv.getContext('2d');
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function drawFrame(d, o) {
   cx.fillStyle = '#000'; cx.fillRect(0, 0, 512, 256); cx.fillStyle = '#e8f1ff';
   for (let x = 0; x < 128; x++) for (let p = 0; p < 8; p++) {
     const b = d[o + p * 128 + x];
-    if (b) for (let k = 0; k < 8; k++) if (b >> k & 1) cx.fillRect(x * 4, (p * 8 + k) * 4, 3.4, 3.4);
+    if (b) for (let k = 0; k < 8; k++) if (b >> k & 1) cx.fillRect(x * 4, (p * 8 + k) * 4, 3.7, 3.7);
   }
 }
 (async () => {
   for (let i = 0; ; i = (i + 1) % DEMOS.length) {
-    const r = await fetch('demo/' + DEMOS[i] + '.bin').catch(() => null);
+    const r = await fetch('demo/' + DEMOS[i][0] + '.bin').catch(() => null);
     if (!r || !r.ok) return;
     const d = new Uint8Array(await r.arrayBuffer()), n = d[4] | d[5] << 8;
-    document.getElementById('demoName').textContent = DEMOS[i].replace(/^jj_/, '').replace(/_/g, ' ');
-    for (let t = 0, f = 0; t < 4500 || f % n; f++) {  // minimal 4,5 detik, selesaikan putaran
+    document.getElementById('demoName').textContent = DEMOS[i][1];
+    for (let t = 0, f = 0; t < 4500 || (f % n && t < 15000); f++) {  // 4,5-15 detik: putaran pendek selesai, lirik panjang dipotong
       const o = 8 + (f % n) * 1026, dl = Math.max(30, d[o] | d[o + 1] << 8);
       drawFrame(d, o + 2);
       if (still) return;

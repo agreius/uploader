@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>agreius Player — Install Firmware</title>
+<meta name="description" content="Firmware gratis agreius Player untuk ESP32-C3. Install langsung dari browser, di laptop atau HP Android.">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Fork ESP Web Tools: sama seperti versi resmi + dukungan Android (WebUSB + kabel OTG) -->
+<script type="module" src="https://unpkg.com/tasmota-esp-web-tools@12.3.1/dist/web/install-button.js?module"></script>
+<style>
+  :root {
+    --bg:#000; --surface:#0a0a0a; --line:#1d1d1d; --line-2:#2c2c2c;
+    --fg:#f5f5f5; --mute:#a0a0a0; --dim:#5a5a5a; --acc:#ff6302; --oled:#e8f1ff;
+    --r:14px; color-scheme:dark;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:72px; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+         -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+  a { color:inherit; }
+  img { max-width:100%; }
+  :focus-visible { outline:2px solid #fff; outline-offset:3px; border-radius:6px; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 max(20px, env(safe-area-inset-left)); }
+  .ico { width:20px; height:20px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* nav */
+  nav { position:sticky; top:0; z-index:10; background:rgba(0,0,0,.72); backdrop-filter:saturate(1.4) blur(12px);
+        -webkit-backdrop-filter:saturate(1.4) blur(12px); border-bottom:1px solid transparent; transition:border-color .2s; }
+  nav.scrolled { border-bottom-color:var(--line); }
+  nav .wrap { display:flex; align-items:center; justify-content:space-between; height:60px; }
+  nav .mark { display:flex; align-items:center; }
+  nav .mark img { width:26px; height:26px; }
+  nav ul { display:flex; gap:4px; list-style:none; margin:0; padding:0; }
+  nav ul a { display:block; padding:10px 12px; border-radius:8px; color:var(--mute); text-decoration:none; font-size:.9rem; font-weight:500; transition:color .2s, background .2s; }
+  nav ul a:hover { color:var(--fg); background:#111; }
+
+  /* hero */
+  .hero { position:relative; text-align:center; padding:72px 0 88px; overflow:hidden; }
+  .hero::before { content:""; position:absolute; left:50%; top:0; width:min(1000px, 140vw); height:460px; transform:translateX(-50%);
+                  pointer-events:none; background:radial-gradient(closest-side, rgba(255,99,2,.11), transparent); }
+  .hero > * { position:relative; }
+  .logo { width:min(620px, 88vw); height:auto; display:block; margin:0 auto; }
+  .lead { margin:28px auto 0; max-width:34ch; color:var(--mute); font-size:clamp(1.02rem, 2.4vw, 1.15rem); }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:36px; }
+  .note { margin-top:16px; color:var(--dim); font-size:.82rem; }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 26px;
+         border-radius:12px; border:1px solid transparent; font-family:inherit; font-weight:600; font-size:.98rem; line-height:1; text-decoration:none; cursor:pointer;
+         transition:transform .15s, filter .2s, border-color .2s, background .2s; }
+  .btn:active { transform:scale(.98); }
+  .btn.primary { background:var(--acc); color:#000; }
+  .btn.primary:hover { filter:brightness(1.1); }
+  .btn.ghost { background:transparent; color:var(--fg); border-color:var(--line-2); }
+  .btn.ghost:hover { border-color:#555; background:#0d0d0d; }
+  .warn { margin:0; max-width:40ch; padding:12px 18px; border:1px solid var(--line-2); border-radius:12px; color:var(--mute); font-size:.92rem; }
+  .warn b { color:var(--fg); }
+
+  /* layar OLED contoh */
+  .device { width:min(460px, 88vw); margin:64px auto 0; padding:18px 18px 14px; background:var(--surface);
+            border:1px solid var(--line); border-radius:22px; box-shadow:0 30px 80px -30px rgba(0,0,0,.9); }
+  .device canvas { display:block; width:100%; aspect-ratio:2/1; background:#000; border-radius:8px; border:1px solid #151515;
+                   image-rendering:pixelated; filter:drop-shadow(0 0 5px rgba(170,205,255,.18)); }
+  .device .bar { display:flex; align-items:center; justify-content:space-between; margin-top:12px; color:var(--dim); font-size:.8rem; }
+  .device .keys { display:flex; gap:8px; }
+  .device .keys i { width:14px; height:14px; border-radius:50%; background:#1a1a1a; border:1px solid #262626; }
+
+  /* section */
+  section { border-top:1px solid var(--line); padding:88px 0; }
+  .eyebrow { color:var(--acc); font-size:.8rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; }
+  h2 { font-size:clamp(1.6rem, 4vw, 2.1rem); line-height:1.2; letter-spacing:-.02em; font-weight:700; margin:0 0 14px; }
+  .sub { color:var(--mute); margin:0 0 40px; max-width:52ch; }
+
+  .grid { display:grid; gap:16px; }
+  .g3 { grid-template-columns:repeat(3, 1fr); }
+  .g2 { grid-template-columns:repeat(2, 1fr); }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:26px; transition:border-color .2s; }
+  .card:hover { border-color:var(--line-2); }
+  .card h3 { font-size:1.02rem; font-weight:600; margin:14px 0 6px; letter-spacing:-.01em; }
+  .card p { color:var(--mute); margin:0; font-size:.94rem; }
+  .card .ico { display:block; width:22px; height:22px; color:var(--acc); }
+  .head .ico { display:inline; }
+
+  .steps { list-style:none; counter-reset:s; padding:0; margin:20px 0 0; }
+  .steps li { counter-increment:s; display:grid; grid-template-columns:32px 1fr; gap:12px; padding:12px 0; border-top:1px solid var(--line); color:var(--mute); font-size:.94rem; }
+  .steps li:first-child { border-top:0; }
+  .steps li::before { content:counter(s); width:28px; height:28px; border-radius:50%; border:1px solid var(--line-2); color:var(--fg);
+                      display:grid; place-items:center; font-size:.8rem; font-weight:600; }
+  .steps b { color:var(--fg); font-weight:600; }
+  .head { display:flex; align-items:center; gap:12px; }
+  .head h3 { margin:0; }
+  .tag { margin-left:auto; font-size:.75rem; color:var(--mute); border:1px solid var(--line-2); border-radius:99px; padding:3px 10px; white-space:nowrap; }
+  .center { text-align:center; margin-top:32px; }
+
+  details { margin-top:16px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); }
+  summary { cursor:pointer; padding:18px 22px; font-weight:600; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+  summary::-webkit-details-marker { display:none; }
+  summary::after { content:"+"; color:var(--mute); font-size:1.3rem; font-weight:400; transition:transform .2s; }
+  details[open] summary::after { transform:rotate(45deg); }
+  details ul { color:var(--mute); margin:0; padding:0 22px 20px 42px; font-size:.94rem; }
+  details li { margin-bottom:8px; }
+  code { background:#141414; border:1px solid var(--line); border-radius:6px; padding:1px 6px; font-size:.86em; color:var(--fg); word-break:break-word; }
+
+  .wiring { display:block; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:#0b0b0b; }
+  .wiring img { display:block; width:100%; height:auto; }
+  .parts { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 24px; }
+  .parts span { border:1px solid var(--line-2); border-radius:99px; padding:6px 12px; font-size:.86rem; color:var(--fg); }
+  .parts .opt { color:var(--mute); border-style:dashed; }
+  .cta-row { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
+  .shout p a { color:var(--fg); text-underline-offset:3px; }
+  .card.action { display:flex; flex-direction:column; }
+  .card.action .btn { margin-top:24px; align-self:flex-start; }
+
+  .donate { display:grid; grid-template-columns:minmax(0, 1.3fr) minmax(0, 1fr); gap:16px; align-items:start; }
+  .donate .sub { margin-bottom:24px; }
+  .sub b { color:var(--fg); font-weight:600; }
+  .plan h3 { margin:0 0 6px; }
+  .plan ul { list-style:none; margin:0; padding:0; }
+  .plan li { display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-top:1px solid var(--line); }
+  .plan li:first-child { border-top:0; }
+  .plan li .ico { margin-top:2px; }
+  .plan li b { display:block; font-weight:600; }
+  .plan li span { color:var(--mute); font-size:.92rem; }
+  .qris { text-align:center; }
+  .qris .paper { background:#fff; border-radius:12px; padding:10px; max-width:340px; margin:0 auto; }
+  .qris .paper img { display:block; width:100%; height:auto; border-radius:6px; }
+  .qris p { margin:16px auto 0; max-width:34ch; font-size:.88rem; }
+  .card.qris .btn { margin-top:18px; }
+  .shout { display:flex; align-items:center; gap:16px; margin-top:16px; }
+  .shout p { margin:0; flex:1; }
+  .shout p b { color:var(--fg); font-weight:600; }
+  .card p a { color:var(--fg); text-underline-offset:3px; }
+
+  footer { border-top:1px solid var(--line); padding:40px 0 calc(48px + env(safe-area-inset-bottom)); color:var(--dim); font-size:.85rem; }
+  footer .wrap { display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; }
+  footer img { height:18px; width:auto; opacity:.85; }
+
+  /* muncul halus saat di-scroll */
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity .5s ease-out, transform .5s ease-out; }
+  .reveal.in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .reveal { opacity:1; transform:none; transition:none; } }
+
+  @media (max-width:820px) { .g3 { grid-template-columns:repeat(2, 1fr); } .donate { grid-template-columns:1fr; } }
+  @media (max-width:640px) {
+    .g3, .g2 { grid-template-columns:1fr; }
+    .hero { padding:48px 0 64px; }
+    section { padding:64px 0; }
+    .card { padding:22px; }
+    nav ul a { padding:10px 7px; font-size:.82rem; }
+    .cta esp-web-install-button, .cta .btn { display:flex; width:100%; }
+    .device { margin-top:48px; }
+    .shout { flex-direction:column; align-items:flex-start; }
+    .shout .btn, .cta-row .btn { width:100%; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m10 9 5 3-5 3z"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="13" r=".6"/><circle cx="18" cy="11" r=".6"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+  <symbol id="i-sd" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V6l4-4h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2Z"/><path d="M10 6v3M14 6v3M18 6v3"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.3 2.6a1 1 0 0 1-.9 1.4H3.6a1 1 0 0 1-.9-1.4L4 16"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3-3a2 2 0 0 0-3 0L6 21"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></symbol>
+  <symbol id="i-screen" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12h10M12 7v10"/><circle cx="7" cy="7" r=".6"/><circle cx="17" cy="7" r=".6"/><circle cx="7" cy="17" r=".6"/><circle cx="17" cy="17" r=".6"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7Z"/><path d="M3.3 7 12 12l8.7-5M12 22V12M7.5 4.3l9 5.2"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M16 13H8M16 17H8M10 9H8"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+</svg>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="agreius.lab, ke atas"><img src="favicon.png" alt="" width="26" height="26"></a>
+    <ul>
+      <li><a href="#rakit">Rakit</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#beli">Beli</a></li>
+      <li><a href="#dukung">Dukung</a></li>
+      <li><a href="converter.html">Konverter</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1 style="margin:0"><img class="logo" src="agreius-logo.png" alt="agreius.lab" width="1120" height="154"></h1>
+    <p class="lead">Hadiah kecil yang hidup: animasi, lagu, game, dan jam di layar OLED.</p>
+    <div class="cta">
+      <esp-web-install-button manifest="firmware/manifest.json">
+        <button slot="activate" class="btn primary"><svg class="ico"><use href="#i-plug"/></svg>Install firmware</button>
+        <p slot="unsupported" class="warn">Browser ini belum bisa install. Pakai <b>Chrome</b> atau <b>Edge</b> di laptop, atau <b>Chrome</b> di HP Android.</p>
+        <p slot="not-allowed" class="warn">Halaman harus dibuka lewat HTTPS.</p>
+      </esp-web-install-button>
+      <a class="btn ghost" href="#install">Cara install</a>
+    </div>
+    <p class="note">Gratis · Laptop &amp; HP Android · <span id="ver">versi terbaru</span></p>
+
+    <div class="device" aria-label="Contoh tampilan layar OLED">
+      <canvas id="oled" width="512" height="256"></canvas>
+      <div class="bar"><span id="demoName">agreius Player</span><span class="keys" aria-hidden="true"><i></i><i></i></span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="fitur">
+    <div class="wrap">
+      <p class="eyebrow reveal">Fitur</p>
+      <h2 class="reveal">Satu alat, banyak kejutan</h2>
+      <p class="sub reveal">Semua isi dibaca dari SD card. Ganti animasi dan lagu kapan saja tanpa install ulang.</p>
+      <div class="grid g3">
+        <div class="card reveal"><svg class="ico"><use href="#i-film"/></svg><h3>Animasi dari gambarmu</h3><p>Ubah GIF atau foto jadi animasi dengan <a href="converter.html">konverter gratis</a> di web ini. Salin ke SD card, langsung terbaca otomatis tanpa install ulang. Sudah termasuk 40+ animasi siap pakai.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-game"/></svg><h3>9 game</h3><p>Flappy Bird, Dino, Snake, Pong, Breakout, dan lainnya. Main pakai dua tombol.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-bot"/></svg><h3>Bot yang hidup</h3><p>Sepasang mata yang berkedip, melirik, dan bereaksi saat dielus.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-clock"/></svg><h3>Jam &amp; notifikasi HP</h3><p>Sambung ke HP lewat Bluetooth dengan app Chronos untuk jam, cuaca, dan notifikasi.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-msg"/></svg><h3>Pesan berefek ketik</h3><p>Tulis pesan sendiri di file teks, muncul huruf demi huruf.</p></div>
+        <div class="card reveal"><svg class="ico"><use href="#i-music"/></svg><h3>Suara sendiri</h3><p>Taruh file <code>.wav</code> dengan nama yang sama seperti animasinya, suaranya ikut diputar otomatis.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rakit">
+    <div class="wrap">
+      <p class="eyebrow reveal">Rakit</p>
+      <h2 class="reveal">Rakit sendiri</h2>
+      <p class="sub reveal">Komponennya mudah dicari di toko online. Sambungkan sesuai warna kabel di gambar. Ketuk gambar untuk memperbesar.</p>
+      <a class="wiring reveal" href="wiring.webp" target="_blank" rel="noopener">
+        <img src="wiring.webp" alt="Diagram wiring ESP32-C3 Super Mini ke OLED, microSD, MAX98357A, speaker, dan dua tombol" width="3600" height="2680" loading="lazy">
+      </a>
+      <div class="parts reveal">
+        <span>ESP32-C3 Super Mini</span><span>OLED 1,3" I2C (SH1106)</span><span>Modul microSD + kartu FAT32</span>
+        <span>MAX98357A</span><span>Speaker 4–8 Ω</span><span>2 tombol taktil</span><span>Kapasitor 470 µF + 47 µF</span>
+        <span class="opt">Opsional baterai: Li-ion, TP4056, MT3608, 1N5819, saklar</span>
+      </div>
+      <a class="btn ghost reveal" href="wiring.webp" download="wiring-agreius-player.webp"><svg class="ico"><use href="#i-down"/></svg>Download gambar wiring</a>
+    </div>
+  </section>
+
+  <section id="beli">
+    <div class="wrap">
+      <p class="eyebrow reveal">Beli</p>
+      <h2 class="reveal">Tidak sempat merakit?</h2>
+      <p class="sub reveal">Tersedia kit dan alat jadi langsung dari agreius.lab. Harga dan stok terbaru ada di Shopee.</p>
+      <div class="grid g2">
+        <div class="card reveal">
+          <svg class="ico"><use href="#i-box"/></svg>
+          <h3>Kit komponen</h3>
+          <p>Semua komponen siap dirakit sesuai gambar wiring. Firmware di-install sendiri dari web ini.</p>
+        </div>
+        <div class="card reveal">
+          <svg class="ico"><use href="#i-gift"/></svg>
+          <h3>Siap pakai</h3>
+          <p>Sudah dirakit, firmware terpasang, SD card berisi animasi. Tinggal nyalakan, cocok untuk hadiah.</p>
+        </div>
+      </div>
+      <div class="cta-row reveal">
+        <a class="btn primary" href="https://shopee.co.id/agreius.lab" target="_blank" rel="noopener"><svg class="ico"><use href="#i-bag"/></svg>Lihat di Shopee</a>
+        <a class="btn ghost" href="https://wa.me/6288287956111?text=Halo%20agreius.lab%2C%20saya%20mau%20pesan%20agreius%20Player%20%28kit%20/%20siap%20pakai%29." target="_blank" rel="noopener"><svg class="ico"><use href="#i-chat"/></svg>Pesan via WhatsApp</a>
+      </div>
+      <div class="card shout reveal" id="lisensi">
+        <svg class="ico"><use href="#i-doc"/></svg>
+        <p><b>Mau menjual alat dengan firmware ini?</b> Firmware gratis untuk pemakaian pribadi. Untuk dijual (toko, reseller, jasa rakit) perlu lisensi komersial dari agreius.lab. <a href="LICENSE.txt">Baca lisensi</a></p>
+        <a class="btn ghost" href="https://wa.me/6288287956111?text=Halo%20agreius.lab%2C%20saya%20mau%20tanya%20lisensi%20komersial%20firmware%20agreius%20Player." target="_blank" rel="noopener"><svg class="ico"><use href="#i-chat"/></svg><span>Tanya lisensi</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <p class="eyebrow reveal">Install</p>
+      <h2 class="reveal">Tanpa Arduino IDE</h2>
+      <p class="sub reveal">Cukup browser dan kabel USB. Tidak perlu install aplikasi atau driver.</p>
+      <div class="grid g2">
+        <div class="card reveal">
+          <div class="head"><svg class="ico"><use href="#i-laptop"/></svg><h3>Laptop / PC</h3><span class="tag">Chrome · Edge</span></div>
+          <ol class="steps">
+            <li><span>Colok ESP32-C3 ke laptop dengan <b>kabel USB-C data</b>.</span></li>
+            <li><span>Klik <b>Install firmware</b>, pilih port (USB JTAG, ttyACM, atau COM), lalu Connect.</span></li>
+            <li><span>Tunggu sekitar 1 menit, lalu tekan <b>RESET</b> di board.</span></li>
+          </ol>
+        </div>
+        <div class="card reveal">
+          <div class="head"><svg class="ico"><use href="#i-phone"/></svg><h3>HP Android</h3><span class="tag">Chrome</span></div>
+          <ol class="steps">
+            <li><span>Sambungkan board ke HP dengan <b>kabel OTG</b> (USB-C ke USB-C, atau adaptor OTG).</span></li>
+            <li><span>Buka halaman ini di <b>Chrome</b>, ketuk <b>Install firmware</b>, lalu izinkan akses USB.</span></li>
+            <li><span>Jangan kunci layar sampai selesai, lalu tekan <b>RESET</b>.</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="center reveal">
+        <esp-web-install-button manifest="firmware/manifest.json">
+          <button slot="activate" class="btn primary"><svg class="ico"><use href="#i-plug"/></svg>Install firmware</button>
+          <p slot="unsupported" class="warn" style="margin:0 auto">iPhone dan browser selain Chrome/Edge belum didukung.</p>
+          <span slot="not-allowed"></span>
+        </esp-web-install-button>
+      </div>
+      <details class="reveal">
+        <summary>Gagal install?</summary>
+        <ul>
+          <li>Port tidak muncul: ganti kabel. Banyak kabel hanya untuk mengecas.</li>
+          <li>Gagal tersambung: tahan <b>BOOT</b>, tekan lalu lepas <b>RESET</b>, lepas BOOT, lalu coba Install lagi.</li>
+          <li>Jangan menahan Tombol 2 (GPIO8) saat install.</li>
+          <li>Tutup aplikasi lain yang memakai port, misalnya Arduino IDE atau Serial Monitor.</li>
+          <li>HP Android: pastikan fitur OTG aktif (di beberapa HP ada di Pengaturan).</li>
+          <li>Linux: jalankan <code>sudo usermod -aG dialout $USER</code>, lalu logout dan login lagi.</li>
+          <li>iPhone/iPad belum bisa karena Safari tidak mendukung akses USB.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <section id="isi">
+    <div class="wrap">
+      <p class="eyebrow reveal">Isi</p>
+      <h2 class="reveal">Siapkan SD card</h2>
+      <p class="sub reveal">Animasi, lagu, dan pesan disimpan di microSD. Salin <code>nama.bin</code> + <code>nama.wav</code> ke folder <code>/anim</code>, lalu buka menu Animasi: langsung muncul, tanpa install ulang.</p>
+      <div class="grid g2">
+        <div class="card action reveal">
+          <svg class="ico"><use href="#i-down"/></svg>
+          <h3>Isi SD card siap pakai</h3>
+          <p>Format kartu ke FAT32, ekstrak file zip, lalu salin semua isinya ke kartu.</p>
+          <a class="btn ghost" href="sdcard.zip" download>Download sdcard.zip</a>
+        </div>
+        <div class="card action reveal">
+          <svg class="ico"><use href="#i-image"/></svg>
+          <h3>Konverter animasi</h3>
+          <p>Ubah GIF, PNG, atau JPG jadi file <code>.bin</code> untuk layar OLED. File tidak dikirim ke mana pun.</p>
+          <a class="btn ghost" href="converter.html">Buka konverter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="dukung">
+    <div class="wrap">
+      <div class="donate">
+        <div>
+          <p class="eyebrow reveal">Dukung</p>
+          <h2 class="reveal">100% gratis, tanpa syarat</h2>
+          <p class="sub reveal">Semua fitur bisa dipakai tanpa bayar, dan donasi sepenuhnya sukarela. Kalau project ini bermanfaat, dukunganmu membantu <b>agreius Player v2</b> jadi kenyataan: layar berwarna, animasi lebih kompleks, dan audio lebih baik.</p>
+          <div class="card plan reveal">
+            <h3>Rencana v2: donasi dipakai untuk</h3>
+            <ul>
+              <li><svg class="ico"><use href="#i-cpu"/></svg><div><b>ESP32-S3</b><span>Prosesor lebih kencang untuk animasi yang lebih kompleks</span></div></li>
+              <li><svg class="ico"><use href="#i-screen"/></svg><div><b>TFT 1,3" 240×240</b><span>Layar berwarna, grafis jauh lebih tajam</span></div></li>
+              <li><svg class="ico"><use href="#i-speaker"/></svg><div><b>MAX98357A</b><span>Pengembangan sistem audio</span></div></li>
+              <li><svg class="ico"><use href="#i-sd"/></svg><div><b>Modul microSD</b><span>Penyimpanan animasi dan lagu</span></div></li>
+              <li><svg class="ico"><use href="#i-board"/></svg><div><b>PCB prototyping</b><span>Merakit papan versi baru</span></div></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card qris reveal">
+          <div class="paper"><img src="qris.jpeg" alt="QRIS AGREIUS.Lab, Service" width="1136" height="1598" loading="lazy"></div>
+          <p>Scan pakai e-wallet atau m-banking apa saja. Buka dari HP? Simpan gambarnya, lalu pilih dari galeri di aplikasi pembayaran.</p>
+          <a class="btn ghost" href="qris.jpeg" download="QRIS-agreius-lab.jpeg"><svg class="ico"><use href="#i-down"/></svg>Download QRIS</a>
+        </div>
+      </div>
+      <div class="card shout reveal">
+        <svg class="ico"><use href="#i-heart"/></svg>
+        <p><b>Belum bisa traktir kopi?</b> Share project ini ke teman maker kamu juga sangat membantu!</p>
+        <button class="btn ghost" id="share" type="button"><svg class="ico"><use href="#i-share"/></svg><span>Share</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="agreius-logo.png" alt="agreius.lab" width="131" height="18">
+    <span>© 2026 agreius.lab · Gratis untuk pemakaian pribadi · <a href="LICENSE.txt">Lisensi</a> · <a href="#lisensi">Lisensi komersial</a></span>
+  </div>
+</footer>
+
+<script>
+'use strict';
+fetch('firmware/manifest.json').then(r => r.json()).then(m => { document.getElementById('ver').textContent = 'v' + m.version; }).catch(() => {});
+
+// Share: menu bagikan bawaan HP, atau salin link di laptop
+const shareBtn = document.getElementById('share');
+shareBtn.onclick = async () => {
+  const url = location.href.split('#')[0];
+  if (navigator.share) return navigator.share({ title: 'agreius Player', text: 'Firmware gratis agreius Player, install langsung dari browser:', url }).catch(() => {});
+  try { await navigator.clipboard.writeText(url); } catch { prompt('Salin link ini:', url); return; }
+  const l = shareBtn.querySelector('span'); l.textContent = 'Link disalin'; setTimeout(() => { l.textContent = 'Share'; }, 2000);
+};
+
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), { passive: true });
+
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Layar contoh: putar beberapa animasi .bin (format AGL1, sama dengan di SD card)
+const DEMOS = ['jj_bot_dj', 'jj_pinguin_joget', 'love_you', 'kembang_api', 'lucu_ufo'];
+const cv = document.getElementById('oled'), cx = cv.getContext('2d');
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function drawFrame(d, o) {
+  cx.fillStyle = '#000'; cx.fillRect(0, 0, 512, 256); cx.fillStyle = '#e8f1ff';
+  for (let x = 0; x < 128; x++) for (let p = 0; p < 8; p++) {
+    const b = d[o + p * 128 + x];
+    if (b) for (let k = 0; k < 8; k++) if (b >> k & 1) cx.fillRect(x * 4, (p * 8 + k) * 4, 3.4, 3.4);
+  }
+}
+(async () => {
+  for (let i = 0; ; i = (i + 1) % DEMOS.length) {
+    const r = await fetch('demo/' + DEMOS[i] + '.bin').catch(() => null);
+    if (!r || !r.ok) return;
+    const d = new Uint8Array(await r.arrayBuffer()), n = d[4] | d[5] << 8;
+    document.getElementById('demoName').textContent = DEMOS[i].replace(/^jj_/, '').replace(/_/g, ' ');
+    for (let t = 0, f = 0; t < 4500 || f % n; f++) {  // minimal 4,5 detik, selesaikan putaran
+      const o = 8 + (f % n) * 1026, dl = Math.max(30, d[o] | d[o + 1] << 8);
+      drawFrame(d, o + 2);
+      if (still) return;
+      await new Promise(r => setTimeout(r, dl)); t += dl;
+    }
+  }
+})();
+</script>
+</body>
+</html>

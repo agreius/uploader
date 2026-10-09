@@ -1,0 +1,33 @@
+LISENSI agreius Player
+Hak cipta (c) 2026 agreius.lab. Seluruh hak dilindungi.
+
+Berlaku untuk: firmware agreius Player (file .bin), konverter animasi,
+web installer, logo dan jingle agreius.lab, serta gambar wiring.
+
+1. PEMAKAIAN PRIBADI: GRATIS
+   Kamu boleh mengunduh, meng-install, dan memakai firmware ini secara gratis
+   untuk keperluan pribadi, hadiah non-komersial, belajar, dan pendidikan.
+   Donasi bersifat sukarela dan tidak menjadi syarat apa pun.
+
+2. YANG TIDAK BOLEH TANPA IZIN TERTULIS
+   a. Menjual firmware ini, atau menjual/menyewakan alat dan kit yang berisi
+      firmware ini (termasuk jasa rakit dan reseller).
+   b. Menghapus, mengganti, atau menyembunyikan logo dan animasi pembuka
+      agreius.lab.
+   c. Mengunggah ulang firmware ini seolah-olah buatan sendiri, atau
+      membongkar (reverse engineering) firmware untuk tujuan tersebut.
+
+3. LISENSI KOMERSIAL
+   Ingin menjual alat atau kit dengan firmware ini? Hubungi agreius.lab untuk
+   lisensi komersial:
+   WhatsApp : https://wa.me/6288287956111
+   Shopee   : https://shopee.co.id/agreius.lab
+
+4. ISI BUATANMU SENDIRI
+   Animasi, suara, dan pesan yang kamu buat sendiri dengan konverter tetap
+   menjadi milikmu.
+
+5. TANPA JAMINAN
+   Firmware dan panduan ini diberikan "apa adanya", tanpa jaminan apa pun.
+   agreius.lab tidak bertanggung jawab atas kerusakan perangkat akibat salah
+   rakit, salah wiring, atau pemakaian baterai.

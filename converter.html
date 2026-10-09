@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Konverter Animasi — agreius.lab</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#000; --panel:#0a0a0a; --field:#121212; --text:#f5f5f5; --muted:#a0a0a0; --dim:#5a5a5a;
+  --line:#1d1d1d; --line-2:#2c2c2c; --accent:#ff6302; --accent-text:#000; --oled-bg:#05070a; color-scheme:dark;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+       -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
+a { color:inherit; }
+:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+.ico { width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+nav { border-bottom:1px solid var(--line); }
+nav .in { max-width:1120px; margin:0 auto; padding:0 20px; height:60px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+nav .brand { display:flex; align-items:center; gap:14px; text-decoration:none; min-width:0; }
+nav .brand img { height:22px; width:auto; display:block; }
+nav .brand span { color:var(--dim); font-size:.9rem; padding-left:14px; border-left:1px solid var(--line-2); white-space:nowrap; }
+nav .back { display:inline-flex; align-items:center; gap:6px; color:var(--muted); text-decoration:none; font-size:.9rem; padding:10px 12px; border-radius:8px; }
+nav .back:hover { color:var(--text); background:#111; }
+
+.intro { max-width:1120px; margin:0 auto; padding:36px 20px 24px; }
+.intro h1 { margin:0 0 6px; font-size:clamp(1.5rem, 4vw, 2rem); letter-spacing:-.02em; }
+.intro p { margin:0; color:var(--muted); }
+
+main { max-width:1120px; margin:0 auto; padding:0 20px 40px; display:grid; gap:16px;
+       grid-template-columns:minmax(0, 1fr) minmax(0, 1.15fr); align-items:start; }
+/* Kolom kanan ikut turun saat di-scroll, jadi pratinjau selalu terlihat */
+.side { position:sticky; top:16px; display:grid; gap:16px; max-height:calc(100vh - 32px); overflow:auto; scrollbar-width:thin; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; }
+#settings .card + .card { margin-top:16px; }
+.card h2 { margin:0 0 14px; font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+.card h2 b { color:var(--accent); font-weight:600; margin-right:6px; }
+
+.drop { display:block; border:1.5px dashed var(--line-2); border-radius:12px; padding:28px 14px; text-align:center; cursor:pointer; color:var(--muted); transition:border-color .2s, background .2s; }
+.drop.over, .drop:hover { border-color:var(--accent); background:#0f0905; color:var(--text); }
+.drop strong { color:var(--text); display:block; margin:8px 0 2px; }
+.drop .ico { width:26px; height:26px; color:var(--accent); }
+.drop small { display:block; margin-top:8px; color:var(--dim); }
+
+.row { display:grid; grid-template-columns:104px minmax(0, 1fr) 52px; gap:10px; align-items:center; margin:10px 0; min-height:36px; }
+.row label { font-size:.9rem; }
+.row output { text-align:right; font-variant-numeric:tabular-nums; color:var(--muted); font-size:.82rem; }
+input[type=range] { width:100%; accent-color:var(--accent); height:28px; }
+select, input[type=text], input[type=number] { width:100%; min-height:40px; padding:8px 10px; border-radius:9px; border:1px solid var(--line-2); background:var(--field); color:var(--text); font:inherit; }
+input[type=color] { width:100%; height:40px; border:1px solid var(--line-2); border-radius:9px; background:var(--field); padding:4px; }
+.check { display:flex; gap:10px; align-items:center; margin:12px 0 2px; min-height:36px; cursor:pointer; }
+.check input { accent-color:var(--accent); width:20px; height:20px; }
+
+.screen { background:#141414; border:1px solid var(--line); border-radius:14px; padding:12px; }
+.screen canvas { display:block; width:100%; height:auto; image-rendering:pixelated; border-radius:6px; background:var(--oled-bg); }
+.controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; }
+button { font:inherit; border-radius:10px; border:1px solid var(--line-2); background:var(--field); color:var(--text); padding:8px 14px; min-height:40px; cursor:pointer;
+         display:inline-flex; align-items:center; gap:8px; transition:border-color .2s, filter .2s; }
+button:hover:not(:disabled) { border-color:#555; }
+button.primary { background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:600; min-height:48px; padding:0 22px; width:100%; justify-content:center; }
+button.primary:hover:not(:disabled) { filter:brightness(1.1); border-color:var(--accent); }
+button:disabled { opacity:.4; cursor:not-allowed; }
+.seg { display:inline-flex; border:1px solid var(--line-2); border-radius:10px; overflow:hidden; }
+.seg button { border:0; border-radius:0; padding:6px 10px; min-height:36px; font-size:.82rem; background:transparent; }
+.seg button.on { background:var(--accent); color:var(--accent-text); }
+.stats { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin:0 0 14px; }
+.stat { background:var(--field); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+.stat b { display:block; font-size:1.1rem; font-variant-numeric:tabular-nums; }
+.stat span { color:var(--muted); font-size:.75rem; }
+.hint { color:var(--muted); font-size:.82rem; margin:10px 0 0; }
+.hint code { background:var(--field); border:1px solid var(--line); padding:1px 5px; border-radius:5px; color:var(--text); }
+.warn { color:var(--accent); font-size:.85rem; margin:10px 0 0; }
+.warn:empty { display:none; }
+footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px calc(28px + env(safe-area-inset-bottom)); }
+
+/* HP: layar pratinjau menempel di atas, pengaturan di-scroll di bawahnya */
+@media (max-width:860px) {
+  main { grid-template-columns:minmax(0, 1fr); }
+  .side { display:contents; }
+  .screen-card { order:-1; position:sticky; top:0; z-index:5; margin:0 -20px; padding:10px 20px 12px; border-radius:0;
+                 border-width:0 0 1px; background:rgba(0,0,0,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .screen-card h2 { display:none; }
+  .screen { padding:8px; }
+  .screen-card .controls { margin-top:8px; }
+  .intro { padding:24px 20px 16px; }
+  .row { grid-template-columns:92px minmax(0, 1fr) 46px; }
+  #seek { min-width:60px !important; }
+  .seg button { padding:6px 8px; }
+}
+@media (max-width:480px) { nav .brand span { display:none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+</svg>
+
+<nav>
+  <div class="in">
+    <a class="brand" href="index.html"><img src="agreius-logo.png" alt="agreius.lab" width="160" height="22"><span>Konverter</span></a>
+    <a class="back" href="index.html"><svg class="ico"><use href="#i-back"/></svg>Beranda</a>
+  </div>
+</nav>
+
+<div class="intro">
+  <h1>Konverter animasi</h1>
+  <p>GIF, PNG, atau JPG → file <code>.bin</code> untuk OLED 128×64. Semua diproses di perangkatmu.</p>
+</div>
+
+<main>
+  <section id="settings">
+    <div class="card">
+      <h2><b>1</b>Pilih file</h2>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*,.bin" multiple hidden>
+        <svg class="ico"><use href="#i-up"/></svg>
+        <strong>Seret file ke sini, atau klik / ketuk untuk memilih</strong>
+        GIF, PNG, JPG, atau .bin
+        <small>Banyak gambar sekaligus = jadi frame animasi. File .bin bisa dibuka untuk dicek.</small>
+      </label>
+      <p class="warn" id="err"></p>
+    </div>
+
+    <div class="card">
+      <h2><b>2</b>Ukuran &amp; posisi</h2>
+      <div class="row"><label for="fit">Mode</label>
+        <select id="fit"><option value="fit">Pas (fit)</option><option value="fill">Penuh (fill, terpotong)</option><option value="stretch">Tarik (stretch)</option><option value="none">Ukuran asli</option></select><span></span></div>
+      <div class="row"><label for="scale">Skala</label><input type="range" id="scale" min="10" max="400" value="100"><output>100%</output></div>
+      <div class="row"><label for="ox">Geser X</label><input type="range" id="ox" min="-128" max="128" value="0"><output>0</output></div>
+      <div class="row"><label for="oy">Geser Y</label><input type="range" id="oy" min="-64" max="64" value="0"><output>0</output></div>
+      <div class="row"><label for="bg">Latar</label>
+        <select id="bg"><option value="0">Hitam (OLED mati)</option><option value="255">Putih (OLED menyala)</option></select><span></span></div>
+    </div>
+
+    <div class="card">
+      <h2><b>3</b>Hapus latar</h2>
+      <div class="row"><label for="rm">Mode</label>
+        <select id="rm"><option value="off">Mati</option><option value="edge">Dari tepi gambar</option><option value="all">Semua warna sama</option></select><span></span></div>
+      <div class="row"><label for="key">Warna latar</label><input type="color" id="key" value="#ffffff"><span></span></div>
+      <div class="row"><label for="tol">Toleransi</label><input type="range" id="tol" min="0" max="160" value="40"><output>40</output></div>
+      <p class="hint">Warna latar diambil otomatis dari pojok kiri atas. "Dari tepi" hanya menghapus latar yang menyambung ke pinggir gambar, jadi warna sama di tengah objek (mis. mata putih) tetap aman.</p>
+    </div>
+
+    <div class="card">
+      <h2><b>4</b>Hitam-putih</h2>
+      <div class="row"><label for="dither">Dithering</label>
+        <select id="dither"><option value="none">Tanpa (threshold saja)</option><option value="fs">Floyd–Steinberg</option><option value="atk" selected>Atkinson</option><option value="bayer">Bayer (pola)</option></select><span></span></div>
+      <div class="row"><label for="thr">Threshold</label><input type="range" id="thr" min="0" max="255" value="128"><output>128</output></div>
+      <div class="row"><label for="bri">Brightness</label><input type="range" id="bri" min="-100" max="100" value="0"><output>0</output></div>
+      <div class="row"><label for="con">Contrast</label><input type="range" id="con" min="-100" max="100" value="0"><output>0</output></div>
+      <label class="check"><input type="checkbox" id="inv"> Balik warna (invert)</label>
+      <p class="hint">Logo atau teks paling tajam tanpa dithering. Foto lebih bagus dengan Atkinson atau Floyd–Steinberg.</p>
+    </div>
+
+    <div class="card">
+      <h2><b>5</b>Animasi</h2>
+      <div class="row"><label for="speed">Kecepatan</label><input type="range" id="speed" min="25" max="400" step="5" value="100"><output>100%</output></div>
+      <div class="row"><label for="fixed">Delay tetap</label><input type="number" id="fixed" min="0" max="10000" step="10" value="0" placeholder="0 = asli"><output>ms</output></div>
+      <div class="row"><label for="skip">Ambil tiap</label><input type="range" id="skip" min="1" max="8" value="1"><output>1</output></div>
+      <p class="hint">"Delay tetap" 0 = pakai waktu asli GIF. "Ambil tiap 2" = buang separuh frame (file lebih kecil, waktu tetap sama).</p>
+    </div>
+  </section>
+
+  <div class="side">
+    <div class="card screen-card">
+      <h2>Pratinjau OLED</h2>
+      <div class="screen"><canvas id="view" width="512" height="256"></canvas></div>
+      <div class="controls">
+        <button id="play" disabled aria-label="Jeda"><svg class="ico"><use href="#i-pause"/></svg></button>
+        <input type="range" id="seek" min="0" max="0" value="0" aria-label="Frame" style="flex:1;min-width:100px">
+        <span class="seg" id="tint" role="group" aria-label="Warna OLED"><button data-c="white" class="on">Putih</button><button data-c="blue">Biru</button><button data-c="duo">Kuning-biru</button></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Hasil</h2>
+      <div class="stats">
+        <div class="stat"><b id="sFrames">0</b><span>frame</span></div>
+        <div class="stat"><b id="sDur">0 s</b><span>1 putaran</span></div>
+        <div class="stat"><b id="sSize">0 KB</b><span>ukuran</span></div>
+      </div>
+      <div class="row" style="grid-template-columns:92px minmax(0,1fr)"><label for="name">Nama file</label><input type="text" id="name" placeholder="contoh: love" autocapitalize="off" autocomplete="off"></div>
+      <button class="primary" id="dl" disabled><svg class="ico"><use href="#i-down"/></svg>Download .bin</button>
+      <p class="hint" id="where">Simpan ke SD card: <code>/anim/nama.bin</code>. Suara: <code>/anim/nama.wav</code> (nama sama). Untuk logo pembuka beri nama <code>boot</code> dan simpan di folder utama SD.</p>
+    </div>
+  </div>
+</main>
+<footer>agreius.lab · konverter berjalan di browser, file tidak dikirim ke mana pun.</footer>
+
+<script>
+'use strict';
+const W = 128, H = 64;
+const $ = id => document.getElementById(id);
+
+// ---------- GIF decoder (tanpa library) ----------
+function decodeGif(buf) {
+  const d = new Uint8Array(buf);
+  let p = 0;
+  const u16 = () => { const v = d[p] | d[p + 1] << 8; p += 2; return v; };
+  const sig = String.fromCharCode(...d.subarray(0, 6));
+  if (sig !== 'GIF87a' && sig !== 'GIF89a') throw new Error('Bukan file GIF');
+  p = 6;
+  const gw = u16(), gh = u16(), flags = d[p++]; p += 2;
+  const readTable = n => { const t = d.subarray(p, p + n * 3); p += n * 3; return t; };
+  const gct = flags & 0x80 ? readTable(1 << ((flags & 7) + 1)) : null;
+  const canvas = new Uint8ClampedArray(gw * gh * 4);
+  const frames = [];
+  let gce = { disposal: 0, delay: 0, trans: -1 };
+  let prev = null, prevRect = null, prevDisposal = 0;
+
+  const subBlocks = () => {
+    const parts = []; let len = 0;
+    for (let n = d[p++]; n; n = d[p++]) { parts.push(d.subarray(p, p + n)); len += n; p += n; }
+    const out = new Uint8Array(len); let o = 0;
+    for (const s of parts) { out.set(s, o); o += s.length; }
+    return out;
+  };
+
+  while (p < d.length) {
+    const b = d[p++];
+    if (b === 0x3B) break;
+    if (b === 0x21) {
+      const label = d[p++];
+      if (label === 0xF9) {
+        const blk = subBlocks();
+        gce = { disposal: (blk[0] >> 2) & 7, delay: (blk[1] | blk[2] << 8) * 10, trans: blk[0] & 1 ? blk[3] : -1 };
+      } else subBlocks();
+    } else if (b === 0x2C) {
+      // terapkan disposal frame sebelumnya
+      if (prevDisposal === 2 && prevRect) {
+        const [x0, y0, w0, h0] = prevRect;
+        for (let y = y0; y < y0 + h0 && y < gh; y++) canvas.fill(0, (y * gw + x0) * 4, (y * gw + Math.min(x0 + w0, gw)) * 4);
+      } else if (prevDisposal === 3 && prev) canvas.set(prev);
+      const x = u16(), y = u16(), w = u16(), h = u16(), f = d[p++];
+      const table = f & 0x80 ? readTable(1 << ((f & 7) + 1)) : gct;
+      const minCode = d[p++];
+      const idx = lzw(minCode, subBlocks(), w * h);
+      if (gce.disposal === 3) prev = canvas.slice();
+      const rows = f & 0x40 ? interlaceRows(h) : null;
+      for (let r = 0; r < h; r++) {
+        const yy = y + (rows ? rows[r] : r);
+        if (yy >= gh) continue;
+        for (let c = 0; c < w; c++) {
+          const xx = x + c, ci = idx[r * w + c];
+          if (xx >= gw || ci === gce.trans || !table) continue;
+          const o = (yy * gw + xx) * 4;
+          canvas[o] = table[ci * 3]; canvas[o + 1] = table[ci * 3 + 1]; canvas[o + 2] = table[ci * 3 + 2]; canvas[o + 3] = 255;
+        }
+      }
+      frames.push({ data: new ImageData(canvas.slice(), gw, gh), delay: gce.delay <= 10 ? 100 : gce.delay });
+      prevDisposal = gce.disposal; prevRect = [x, y, w, h];
+      gce = { disposal: 0, delay: 0, trans: -1 };
+    } else break;  // byte tidak dikenal: berhenti dengan frame yang sudah ada
+  }
+  if (!frames.length) throw new Error('GIF tidak berisi frame');
+  return frames;
+}
+
+function interlaceRows(h) {  // baris ke-r data → baris gambar sebenarnya
+  const rows = [];
+  for (const [start, step] of [[0, 8], [4, 8], [2, 4], [1, 2]])
+    for (let y = start; y < h; y += step) rows.push(y);
+  return rows;
+}
+
+function lzw(minSize, data, count) {
+  const out = new Uint8Array(count);
+  const clear = 1 << minSize, eoi = clear + 1;
+  const prefix = new Int16Array(4096), suffix = new Uint8Array(4096), stack = new Uint8Array(4097);
+  for (let i = 0; i < clear; i++) suffix[i] = i;
+  let size = minSize + 1, mask = (1 << size) - 1, next = eoi + 1, old = -1, first = 0;
+  let bits = 0, acc = 0, pos = 0, op = 0;
+  while (op < count) {
+    while (bits < size) { if (pos >= data.length) return out; acc |= data[pos++] << bits; bits += 8; }
+    let code = acc & mask; acc >>>= size; bits -= size;
+    if (code === clear) { size = minSize + 1; mask = (1 << size) - 1; next = eoi + 1; old = -1; continue; }
+    if (code === eoi) break;
+    if (old === -1) { out[op++] = first = suffix[code]; old = code; continue; }
+    const inCode = code; let sp = 0;
+    if (code >= next) { stack[sp++] = first; code = old; }  // kasus KwKwK
+    while (code > eoi && sp < 4096) { stack[sp++] = suffix[code]; code = prefix[code]; }
+    first = suffix[code]; stack[sp++] = first;
+    while (sp && op < count) out[op++] = stack[--sp];
+    if (next < 4096) {
+      prefix[next] = old; suffix[next] = first; next++;
+      if (next === mask + 1 && size < 12) { size++; mask = (1 << size) - 1; }
+    }
+    old = inCode;
+  }
+  return out;
+}
+
+// ---------- file .bin (AGL1) ----------
+function decodeBin(buf) {
+  const d = new Uint8Array(buf);
+  if (String.fromCharCode(...d.subarray(0, 4)) !== 'AGL1') throw new Error('Bukan file .bin agreius lab');
+  const n = d[4] | d[5] << 8;
+  if (d.length !== 8 + n * 1026) throw new Error('File .bin rusak / terpotong');
+  const frames = [];
+  for (let i = 0; i < n; i++) {
+    const o = 8 + i * 1026, img = new ImageData(W, H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const v = d[o + 2 + (y >> 3) * W + x] >> (y & 7) & 1 ? 255 : 0, k = (y * W + x) * 4;
+      img.data[k] = img.data[k + 1] = img.data[k + 2] = v; img.data[k + 3] = 255;
+    }
+    frames.push({ data: img, delay: d[o] | d[o + 1] << 8 });
+  }
+  return frames;
+}
+
+function packBin(frames) {  // frames: [{bits: Uint8Array(W*H), delay}]
+  const out = new Uint8Array(8 + frames.length * 1026);
+  out.set([65, 71, 76, 49, frames.length & 255, frames.length >> 8, 0, 0]);  // "AGL1"
+  frames.forEach((f, i) => {
+    const o = 8 + i * 1026, dl = Math.max(20, Math.min(65535, Math.round(f.delay)));
+    out[o] = dl & 255; out[o + 1] = dl >> 8;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++)
+      if (f.bits[y * W + x]) out[o + 2 + (y >> 3) * W + x] |= 1 << (y & 7);
+  });
+  return out;
+}
+
+// ---------- hapus latar ----------
+// px: RGBA. Piksel yang mirip `key` (selisih tiap kanal <= tol) dibuat transparan.
+// edge = hanya yang menyambung ke tepi (flood fill); piksel yang sudah transparan ikut dilewati.
+function removeBg(px, w, h, key, tol, edge) {
+  const isBg = i => px[i * 4 + 3] < 128 || Math.max(Math.abs(px[i * 4] - key[0]), Math.abs(px[i * 4 + 1] - key[1]), Math.abs(px[i * 4 + 2] - key[2])) <= tol;
+  if (!edge) { for (let i = 0; i < w * h; i++) if (isBg(i)) px[i * 4 + 3] = 0; return; }
+  const seen = new Uint8Array(w * h), stack = [];
+  const push = i => { if (!seen[i] && isBg(i)) { seen[i] = 1; stack.push(i); } };
+  for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
+  for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
+  while (stack.length) {
+    const i = stack.pop(), x = i % w;
+    px[i * 4 + 3] = 0;
+    if (x > 0) push(i - 1); if (x < w - 1) push(i + 1);
+    if (i >= w) push(i - w); if (i < w * (h - 1)) push(i + w);
+  }
+}
+
+// ---------- pengolahan gambar ----------
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const work = document.createElement('canvas'); work.width = W; work.height = H;
+const wctx = work.getContext('2d', { willReadFrequently: true });
+
+function toBits(src, o) {  // src: canvas sumber satu frame
+  const bg = +o.bg;
+  wctx.clearRect(0, 0, W, H);
+  let sx, sy;
+  if (o.fit === 'stretch') { sx = W / src.width; sy = H / src.height; }
+  else {
+    const s = o.fit === 'fit' ? Math.min(W / src.width, H / src.height)
+            : o.fit === 'fill' ? Math.max(W / src.width, H / src.height) : 1;
+    sx = sy = s;
+  }
+  sx *= o.scale / 100; sy *= o.scale / 100;
+  const dw = src.width * sx, dh = src.height * sy;
+  wctx.imageSmoothingEnabled = true; wctx.imageSmoothingQuality = 'high';
+  wctx.drawImage(src, (W - dw) / 2 + o.ox, (H - dh) / 2 + o.oy, dw, dh);
+  const px = wctx.getImageData(0, 0, W, H).data;
+  if (o.rm !== 'off') removeBg(px, W, H, o.key, o.tol, o.rm === 'edge');
+
+  const c = o.con * 2.55, cf = 259 * (c + 255) / (255 * (259 - c));
+  const g = new Float32Array(W * H);
+  for (let i = 0; i < W * H; i++) {
+    const a = px[i * 4 + 3] / 255;
+    const l = (0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2]) * a + bg * (1 - a);
+    g[i] = (l - 128) * cf + 128 + o.bri * 1.28;
+  }
+  const bits = new Uint8Array(W * H), thr = o.thr;
+  const spread = (x, y, e, list) => {
+    for (const [dx, dy, w] of list) {
+      const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && xx < W && yy < H) g[yy * W + xx] += e * w;
+    }
+  };
+  const FS = [[1, 0, 7 / 16], [-1, 1, 3 / 16], [0, 1, 5 / 16], [1, 1, 1 / 16]];
+  const ATK = [[1, 0, 1 / 8], [2, 0, 1 / 8], [-1, 1, 1 / 8], [0, 1, 1 / 8], [1, 1, 1 / 8], [0, 2, 1 / 8]];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x, v = g[i];
+    let on;
+    if (o.dither === 'bayer') on = v + ((BAYER[(y & 3) * 4 + (x & 3)] + 0.5) / 16 - 0.5) * 255 >= thr;
+    else {
+      on = v >= thr;
+      if (o.dither !== 'none') spread(x, y, v - (on ? 255 : 0), o.dither === 'fs' ? FS : ATK);
+    }
+    bits[i] = on !== o.inv ? 1 : 0;
+  }
+  return bits;
+}
+
+// ---------- state & UI ----------
+let sources = [], baseName = '';   // [{canvas, delay}]
+let out = [], cur = 0, playing = true, timer = 0, tint = 'white';
+
+const opts = () => ({
+  rm: $('rm').value, tol: +$('tol').value, key: $('key').value.match(/\w\w/g).map(h => parseInt(h, 16)),
+  fit: $('fit').value, scale: +$('scale').value, ox: +$('ox').value, oy: +$('oy').value, bg: $('bg').value,
+  dither: $('dither').value, thr: +$('thr').value, bri: +$('bri').value, con: +$('con').value, inv: $('inv').checked,
+  speed: +$('speed').value, fixed: +$('fixed').value || 0, skip: +$('skip').value,
+});
+
+function process() {
+  if (!sources.length) return;
+  const o = opts();
+  out = [];
+  for (let i = 0; i < sources.length; i += o.skip) {
+    let delay = 0;
+    for (let k = i; k < Math.min(i + o.skip, sources.length); k++) delay += sources[k].delay;
+    delay = o.fixed || delay * 100 / o.speed;
+    out.push({ bits: toBits(sources[i].canvas, o), delay: Math.max(20, Math.min(65535, Math.round(delay))) });
+  }
+  cur = Math.min(cur, out.length - 1);
+  const dur = out.reduce((s, f) => s + f.delay, 0);
+  $('sFrames').textContent = out.length;
+  $('sDur').textContent = (dur / 1000).toFixed(dur < 10000 ? 2 : 1) + ' s';
+  $('sSize').textContent = ((8 + out.length * 1026) / 1024).toFixed(1) + ' KB';
+  $('seek').max = out.length - 1;
+  $('err').textContent = out.length > 600 ? 'Frame sangat banyak — pertimbangkan "Ambil tiap" agar file lebih kecil.' : '';
+  draw();
+}
+
+const view = $('view'), vctx = view.getContext('2d');
+function draw() {
+  const f = out[cur]; if (!f) return;
+  const s = view.width / W;
+  vctx.fillStyle = '#05070a'; vctx.fillRect(0, 0, view.width, view.height);
+  for (let y = 0; y < H; y++) {
+    vctx.fillStyle = tint === 'blue' ? '#5cc8ff' : tint === 'duo' && y < 16 ? '#ffd23f' : tint === 'duo' ? '#5cc8ff' : '#f2f6ff';
+    for (let x = 0; x < W; x++) if (f.bits[y * W + x]) vctx.fillRect(x * s, y * s, s - 0.6, s - 0.6);
+  }
+  $('seek').value = cur;
+}
+
+function tick() {
+  clearTimeout(timer);
+  if (!playing || out.length < 2) return;
+  timer = setTimeout(() => { cur = (cur + 1) % out.length; draw(); tick(); }, out[cur].delay);
+}
+
+function toCanvas(img, w, h) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  if (img instanceof ImageData) x.putImageData(img, 0, 0); else x.drawImage(img, 0, 0);
+  return c;
+}
+
+async function load(files) {
+  files = [...files].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  if (!files.length) return;
+  $('err').textContent = '';
+  try {
+    const srcs = [];
+    for (const f of files) {
+      const buf = await f.arrayBuffer();
+      const head = String.fromCharCode(...new Uint8Array(buf, 0, Math.min(4, buf.byteLength)));
+      if (head === 'GIF8') for (const fr of decodeGif(buf)) srcs.push({ canvas: toCanvas(fr.data, fr.data.width, fr.data.height), delay: fr.delay });
+      else if (head === 'AGL1') {
+        for (const fr of decodeBin(buf)) srcs.push({ canvas: toCanvas(fr.data, W, H), delay: fr.delay });
+        $('fit').value = 'none'; $('scale').value = 100; $('ox').value = 0; $('oy').value = 0; $('dither').value = 'none'; $('thr').value = 128;
+      } else {
+        const bmp = await createImageBitmap(f);
+        srcs.push({ canvas: toCanvas(bmp, bmp.width, bmp.height), delay: files.length > 1 ? 100 : 1000 });
+      }
+    }
+    sources = srcs; cur = 0;
+    const c0 = srcs[0].canvas.getContext('2d').getImageData(0, 0, 1, 1).data;
+    if (c0[3] > 127) $('key').value = '#' + [...c0.subarray(0, 3)].map(v => v.toString(16).padStart(2, '0')).join('');
+    baseName = files[0].name.replace(/\.[^.]+$/, '');
+    $('name').value = cleanName(baseName);
+    $('name').oninput();  // perbarui petunjuk lokasi simpan
+    syncOutputs();
+    $('play').disabled = $('dl').disabled = false;
+    process(); tick();
+  } catch (e) {
+    $('err').textContent = 'Gagal membaca file: ' + e.message;
+  }
+}
+
+const cleanName = s => s.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 32) || 'animasi';
+
+function syncOutputs() {
+  for (const el of document.querySelectorAll('.row input[type=range]')) {
+    const o = el.parentElement.querySelector('output');
+    if (o) o.textContent = el.value + (el.id === 'scale' || el.id === 'speed' ? '%' : '');
+  }
+}
+
+let pending = 0;
+document.querySelectorAll('#settings input, #settings select').forEach(el =>
+  el.addEventListener('input', () => {
+    syncOutputs();
+    cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(() => { process(); tick(); });
+  }));
+
+$('file').addEventListener('change', e => load(e.target.files));
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => load(e.dataTransfer.files));
+
+$('play').onclick = () => {
+  playing = !playing;
+  $('play').innerHTML = `<svg class="ico"><use href="#i-${playing ? 'pause' : 'play'}"/></svg>`;
+  $('play').setAttribute('aria-label', playing ? 'Jeda' : 'Putar');
+  tick();
+};
+$('seek').oninput = e => { cur = +e.target.value; draw(); tick(); };
+$('tint').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  tint = b.dataset.c;
+  $('tint').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  draw();
+};
+$('name').oninput = () => {
+  const n = cleanName($('name').value);
+  $('where').innerHTML = n === 'boot'
+    ? 'Logo pembuka: simpan sebagai <code>/boot.bin</code> di folder utama SD. Jingle: <code>/boot.wav</code>.'
+    : `Simpan ke SD card: <code>/anim/${n}.bin</code>. Suara: <code>/anim/${n}.wav</code> (nama sama).`;
+};
+$('dl').onclick = () => {
+  const name = cleanName($('name').value || baseName);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([packBin(out)], { type: 'application/octet-stream' }));
+  a.download = name + '.bin';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+</script>
+</body>
+</html>

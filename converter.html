@@ -15,6 +15,7 @@
   --line:#1d1d1d; --line-2:#2c2c2c; --accent:#ff6302; --accent-text:#000; --oled-bg:#05070a; color-scheme:dark;
 }
 * { box-sizing:border-box; }
+[hidden] { display:none !important; }
 body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
        -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent; }
 a { color:inherit; }
@@ -77,6 +78,13 @@ button:disabled { opacity:.4; cursor:not-allowed; }
 .hint code { background:var(--field); border:1px solid var(--line); padding:1px 5px; border-radius:5px; color:var(--text); }
 .warn { color:var(--accent); font-size:.85rem; margin:10px 0 0; }
 .warn:empty { display:none; }
+.hint.ok { color:#4ade80; }
+.hint.ok:empty { display:none; }
+.sdbtn { width:100%; justify-content:center; margin-top:8px; border-color:var(--accent); color:var(--accent); background:transparent; }
+.pesan { max-width:1120px; margin:0 auto; border-top:1px solid var(--line); }
+.pgrid { display:grid; gap:16px; grid-template-columns:minmax(0, 1fr) minmax(0, 1.15fr); align-items:start; padding:0 20px 40px; }
+textarea { width:100%; min-height:200px; resize:vertical; padding:12px; border-radius:10px; border:1px solid var(--line-2); background:var(--field); color:var(--text); font:15px/1.5 ui-monospace, monospace; }
+@media (max-width:860px) { .pgrid { grid-template-columns:minmax(0, 1fr); } }
 footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px calc(28px + env(safe-area-inset-bottom)); }
 
 /* HP: layar pratinjau menempel di atas, pengaturan di-scroll di bawahnya */
@@ -102,6 +110,7 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></symbol>
+  <symbol id="i-sd" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V6l4-4h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2Z"/><path d="M10 6v3M14 6v3M18 6v3"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
 </svg>
 
@@ -114,7 +123,7 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
 
 <div class="intro">
   <h1>Konverter animasi</h1>
-  <p>GIF, PNG, atau JPG → file <code>.bin</code> untuk OLED 128×64. Semua diproses di perangkatmu.</p>
+  <p>GIF, gambar, atau video → <code>.bin</code> untuk OLED 128×64. Video dan musik → <code>.wav</code>. Semua diproses di perangkatmu. <a href="#pesan">Buat pesan teks ↓</a></p>
 </div>
 
 <main>
@@ -122,13 +131,25 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
     <div class="card">
       <h2><b>1</b>Pilih file</h2>
       <label class="drop" id="drop">
-        <input type="file" id="file" accept="image/*,.bin" multiple hidden>
+        <input type="file" id="file" accept="image/*,video/*,audio/*,.bin" multiple hidden>
         <svg class="ico"><use href="#i-up"/></svg>
         <strong>Seret file ke sini, atau klik / ketuk untuk memilih</strong>
-        GIF, PNG, JPG, atau .bin
-        <small>Banyak gambar sekaligus = jadi frame animasi. File .bin bisa dibuka untuk dicek.</small>
+        GIF, PNG, JPG, video (MP4/WebM), musik (MP3/M4A), atau .bin
+        <small>Banyak gambar sekaligus = jadi frame animasi. Gambar dulu lalu musik = gambar diam bersuara.</small>
       </label>
       <p class="warn" id="err"></p>
+    </div>
+
+    <div class="card" id="media" hidden>
+      <h2><b>1b</b>Video &amp; suara</h2>
+      <p class="hint" id="mInfo" style="margin:0 0 6px"></p>
+      <div class="row"><label for="mStart">Mulai</label><input class="m" type="number" id="mStart" min="0" step="0.5" value="0"><output>detik</output></div>
+      <div class="row"><label for="mLen">Durasi</label><input class="m" type="number" id="mLen" min="0.5" step="0.5" value="10"><output>detik</output></div>
+      <div class="row" id="mFpsRow"><label for="mFps">Frame/detik</label>
+        <select class="m" id="mFps"><option>5</option><option>8</option><option selected>10</option><option>12</option><option>15</option></select><span></span></div>
+      <label class="check"><input class="m" type="checkbox" id="mNorm" checked> Keraskan suara (normalisasi)</label>
+      <button id="mApply" type="button" style="margin-top:10px">Ambil ulang</button>
+      <p class="hint">Maksimal 5 menit. Ukuran .bin ±1 KB per frame (10 frame/detik × 2 menit ≈ 1,2 MB), .wav ±1 MB per 30 detik. Video panjang butuh waktu untuk diambil frame-nya.</p>
     </div>
 
     <div class="card">
@@ -191,10 +212,41 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
       </div>
       <div class="row" style="grid-template-columns:92px minmax(0,1fr)"><label for="name">Nama file</label><input type="text" id="name" placeholder="contoh: love" autocapitalize="off" autocomplete="off"></div>
       <button class="primary" id="dl" disabled><svg class="ico"><use href="#i-down"/></svg>Download .bin</button>
+      <button id="dlWav" type="button" hidden style="width:100%;justify-content:center;margin-top:8px"><svg class="ico"><use href="#i-down"/></svg>Download .wav</button>
+      <button class="sdbtn" id="sdAnim" type="button" disabled hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan langsung ke SD card</button>
+      <p class="hint ok" id="sdAnimMsg"></p>
       <p class="hint" id="where">Simpan ke SD card: <code>/anim/nama.bin</code>. Suara: <code>/anim/nama.wav</code> (nama sama). Untuk logo pembuka beri nama <code>boot</code> dan simpan di folder utama SD.</p>
     </div>
   </div>
 </main>
+
+<section class="pesan" id="pesan">
+  <div class="intro" style="padding-top:8px">
+    <h1>Buat pesan</h1>
+    <p>Tulis pesan untuk mode <b>Pesan</b>. Tampil huruf demi huruf, sama seperti di alat.</p>
+  </div>
+  <div class="pgrid">
+    <div class="card">
+      <h2>Tulis</h2>
+      <textarea id="pText" rows="10" placeholder="Selamat ulang tahun!&#10;&#10;Semoga semua impianmu tercapai."></textarea>
+      <p class="hint" id="pStat"></p>
+      <p class="warn" id="pWarn"></p>
+      <div class="row" style="grid-template-columns:92px minmax(0,1fr)"><label for="pName">Nama file</label><input type="text" id="pName" placeholder="contoh: ultah" autocapitalize="off" autocomplete="off"></div>
+      <button class="primary" id="pDl" type="button"><svg class="ico"><use href="#i-down"/></svg>Download .txt</button>
+      <button class="sdbtn" id="sdPesan" type="button" hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan langsung ke SD card</button>
+      <p class="hint ok" id="sdPesanMsg"></p>
+      <p class="hint" id="pWhere">Simpan ke SD card: <code>/pesan/nama.txt</code>. Suara latar opsional: <code>/pesan/nama.wav</code>.</p>
+    </div>
+    <div class="card">
+      <h2>Pratinjau OLED</h2>
+      <div class="screen"><canvas id="pView" width="512" height="256"></canvas></div>
+      <div class="controls">
+        <button id="pReplay" type="button">Ulangi efek ketik</button>
+        <span class="hint" style="margin:0">Huruf: perkiraan font alat (6×10)</span>
+      </div>
+    </div>
+  </div>
+</section>
 <footer>agreius.lab · konverter berjalan di browser, file tidak dikirim ke mana pun.</footer>
 
 <script>
@@ -348,6 +400,43 @@ function removeBg(px, w, h, key, tol, edge) {
   }
 }
 
+// ---------- WAV ----------
+// sampel float -1..1 (mono) → WAV PCM 16-bit, format yang dibaca firmware
+function encodeWav(x, rate) {
+  const out = new Uint8Array(44 + x.length * 2), v = new DataView(out.buffer);
+  const str = (o, t) => { for (let i = 0; i < t.length; i++) out[o + i] = t.charCodeAt(i); };
+  str(0, 'RIFF'); v.setUint32(4, 36 + x.length * 2, true); str(8, 'WAVEfmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  str(36, 'data'); v.setUint32(40, x.length * 2, true);
+  for (let i = 0; i < x.length; i++) v.setInt16(44 + i * 2, Math.round(Math.max(-1, Math.min(1, x[i])) * 32767), true);
+  return out;
+}
+
+// ---------- pesan: potong baris persis seperti wrap() di src/pesan.cpp ----------
+const MAXC = 21, PLINES = 6, PMAX_BYTES = 4096;
+function wrapPesan(txt) {
+  const out = [];
+  for (let para of txt.split('\n')) {
+    para = para.replace(/\r/g, '').replace(/\t/g, ' ');
+    let cur = [];
+    for (let word of para.split(' ')) {
+      word = [...word];  // per huruf (UTF-8 aman)
+      if (!word.length) continue;
+      while (word.length > MAXC) {
+        if (cur.length) { out.push(cur.join('')); cur = []; }
+        out.push(word.slice(0, MAXC).join('')); word = word.slice(MAXC);
+      }
+      if (!cur.length) cur = word;
+      else if (cur.length + 1 + word.length <= MAXC) cur = [...cur, ' ', ...word];
+      else { out.push(cur.join('')); cur = word; }
+    }
+    out.push(cur.join(''));  // paragraf kosong = baris kosong
+  }
+  while (out.length && !out[out.length - 1]) out.pop();
+  return out;
+}
+
 // ---------- pengolahan gambar ----------
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const work = document.createElement('canvas'); work.width = W; work.height = H;
@@ -459,6 +548,8 @@ async function load(files) {
   files = [...files].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   if (!files.length) return;
   $('err').textContent = '';
+  const mf = files.find(f => /^(video|audio)\//.test(f.type));
+  if (mf) return loadMedia(mf);
   try {
     const srcs = [];
     for (const f of files) {
@@ -473,18 +564,117 @@ async function load(files) {
         srcs.push({ canvas: toCanvas(bmp, bmp.width, bmp.height), delay: files.length > 1 ? 100 : 1000 });
       }
     }
-    sources = srcs; cur = 0;
-    const c0 = srcs[0].canvas.getContext('2d').getImageData(0, 0, 1, 1).data;
-    if (c0[3] > 127) $('key').value = '#' + [...c0.subarray(0, 3)].map(v => v.toString(16).padStart(2, '0')).join('');
-    baseName = files[0].name.replace(/\.[^.]+$/, '');
-    $('name').value = cleanName(baseName);
-    $('name').oninput();  // perbarui petunjuk lokasi simpan
-    syncOutputs();
-    $('play').disabled = $('dl').disabled = false;
-    process(); tick();
+    media = null; wav = null; $('media').hidden = $('dlWav').hidden = true;
+    useSources(srcs, files[0].name);
   } catch (e) {
     $('err').textContent = 'Gagal membaca file: ' + e.message;
   }
+}
+
+function useSources(srcs, fileName) {
+  sources = srcs; cur = 0;
+  const c0 = srcs[0].canvas.getContext('2d').getImageData(0, 0, 1, 1).data;
+  if (c0[3] > 127) $('key').value = '#' + [...c0.subarray(0, 3)].map(v => v.toString(16).padStart(2, '0')).join('');
+  setName(fileName);
+  syncOutputs();
+  $('play').disabled = $('dl').disabled = $('sdAnim').disabled = false;
+  process(); tick();
+}
+
+function setName(fileName) {
+  baseName = fileName.replace(/\.[^.]+$/, '');
+  $('name').value = cleanName(baseName);
+  $('name').oninput();  // perbarui petunjuk lokasi simpan
+}
+
+// ---------- video & musik ----------
+const RATE = 16000, MAXF = 3000;  // 16 kHz mono = ringan untuk ESP32; 3000 frame ≈ 3 MB (5 menit @10 fps)
+let media = null, wav = null;    // media: {file, video, duration}
+const once = (el, ev) => new Promise((ok, no) => { el.addEventListener(ev, ok, { once: true }); el.addEventListener('error', () => no(new Error('format tidak didukung browser')), { once: true }); });
+
+async function loadMedia(file) {
+  const video = file.type.startsWith('video/');
+  let duration;
+  if (video) {
+    const v = document.createElement('video'); v.preload = 'metadata'; v.src = URL.createObjectURL(file);
+    try {
+      await once(v, 'loadedmetadata');
+      if (!isFinite(v.duration)) { const d = once(v, 'durationchange'); v.currentTime = 1e9; await d; }  // webm rekaman browser: durasi belum tertulis
+      duration = v.duration;
+    } catch (e) { $('err').textContent = 'Gagal membuka video: ' + e.message; return; }
+    URL.revokeObjectURL(v.src);
+  }
+  media = { file, video, duration };
+  $('media').hidden = false;
+  $('mFpsRow').hidden = !video;
+  $('mStart').value = 0;
+  $('mLen').value = video ? Math.min(300, Math.round(duration * 2) / 2) || 0.5 : 300;
+  if (!sources.length || video) setName(file.name);
+  await extractMedia();
+}
+
+async function extractMedia() {
+  if (!media) return;
+  const busy = $('mApply'); busy.disabled = true;
+  const start = Math.max(0, +$('mStart').value || 0), fps = +$('mFps').value;
+  let len = Math.max(0.5, +$('mLen').value || 1);
+  try {
+    if (media.video) {
+      len = Math.min(len, Math.max(0.1, media.duration - start), MAXF / fps);
+      len = Math.max(1, Math.round(len * fps)) / fps;  // kelipatan frame: .bin dan .wav sama panjang persis
+      const srcs = await videoFrames(media.file, start, len, fps, media.duration);
+      useSources(srcs, media.file.name);
+    }
+    wav = await audioWav(media.file, start, len, $('mNorm').checked, media.video);
+    $('dlWav').hidden = !wav;
+    if (wav) $('sdAnim').disabled = false;
+    const t = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
+    $('mInfo').textContent = (media.video ? `Video ${t(media.duration)} · ${Math.round(len * fps)} frame` : `Musik · ${wav ? ((wav.length - 44) / 2 / RATE).toFixed(1) : 0} detik`)
+      + (wav ? ` · suara ${(wav.length / 1024).toFixed(0)} KB` : ' · tanpa suara');
+    $('err').textContent = !wav && !media.video ? 'Suara tidak bisa dibaca. Coba MP3 atau M4A.' : '';
+  } catch (e) {
+    $('err').textContent = 'Gagal memproses: ' + e.message;
+  }
+  busy.disabled = false;
+}
+
+async function videoFrames(file, start, len, fps, duration) {
+  const v = document.createElement('video');
+  v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = URL.createObjectURL(file);
+  await once(v, 'loadeddata');
+  const s = Math.min(1, 160 / v.videoWidth),  // kecil: 3000 frame tetap muat di memori HP
+        w = Math.max(1, Math.round(v.videoWidth * s)), h = Math.max(1, Math.round(v.videoHeight * s));
+  const n = Math.max(1, Math.round(len * fps)), srcs = [];
+  for (let i = 0; i < n; i++) {
+    $('err').textContent = `Mengambil frame ${i + 1}/${n}…`;
+    const seeked = once(v, 'seeked');
+    v.currentTime = Math.min(start + i / fps, duration - 0.01);
+    await seeked;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(v, 0, 0, w, h);
+    // pembulatan kumulatif: total durasi .bin = durasi .wav, tidak bergeser
+    srcs.push({ canvas: c, delay: Math.round((i + 1) * 1000 / fps) - Math.round(i * 1000 / fps) });
+  }
+  URL.revokeObjectURL(v.src);
+  $('err').textContent = '';
+  return srcs;
+}
+
+async function audioWav(file, start, len, normalize, pad) {
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  let buf;
+  try { buf = await ac.decodeAudioData(await file.arrayBuffer()); } catch { return null; } finally { ac.close(); }
+  const have = Math.min(len, buf.duration - start);
+  if (have <= 0) return null;
+  // video: sisa diisi hening supaya .wav sama panjang dengan .bin (firmware mengulang suara tiap loop)
+  const off = new OfflineAudioContext(1, Math.ceil((pad ? len : have) * RATE), RATE);  // 1 kanal: stereo dicampur jadi mono
+  const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start(0, start, have);
+  const x = (await off.startRendering()).getChannelData(0);
+  if (normalize) {
+    let peak = 0; for (const v of x) peak = Math.max(peak, Math.abs(v));
+    if (peak > 0.01) { const g = Math.min(8, 0.95 / peak); for (let i = 0; i < x.length; i++) x[i] *= g; }
+  }
+  return encodeWav(x, RATE);
 }
 
 const cleanName = s => s.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 32) || 'animasi';
@@ -497,11 +687,11 @@ function syncOutputs() {
 }
 
 let pending = 0;
-document.querySelectorAll('#settings input, #settings select').forEach(el =>
+document.querySelectorAll('#settings input:not(.m), #settings select:not(.m)').forEach(el =>
   el.addEventListener('input', () => {
     syncOutputs();
-    cancelAnimationFrame(pending);
-    pending = requestAnimationFrame(() => { process(); tick(); });
+    clearTimeout(pending);  // banyak frame: tunggu slider berhenti dulu baru proses ulang
+    pending = setTimeout(() => { process(); tick(); }, sources.length > 200 ? 250 : 0);
   }));
 
 $('file').addEventListener('change', e => load(e.target.files));
@@ -529,14 +719,87 @@ $('name').oninput = () => {
     ? 'Logo pembuka: simpan sebagai <code>/boot.bin</code> di folder utama SD. Jingle: <code>/boot.wav</code>.'
     : `Simpan ke SD card: <code>/anim/${n}.bin</code>. Suara: <code>/anim/${n}.wav</code> (nama sama).`;
 };
-$('dl').onclick = () => {
-  const name = cleanName($('name').value || baseName);
+const save = (data, ext, type) => {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([packBin(out)], { type: 'application/octet-stream' }));
-  a.download = name + '.bin';
+  a.href = URL.createObjectURL(new Blob([data], { type }));
+  a.download = cleanName($('name').value || baseName) + ext;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
+$('dl').onclick = () => save(packBin(out), '.bin', 'application/octet-stream');
+$('dlWav').onclick = () => save(wav, '.wav', 'audio/wav');
+$('mApply').onclick = extractMedia;
+
+// ---------- simpan langsung ke SD card (card reader, Chrome/Edge laptop) ----------
+let sdDir = null;
+async function sdSave(files, msgEl) {  // files: [[folder ('' = utama), nama, data]]
+  try {
+    if (!sdDir) {
+      const d = await showDirectoryPicker({ id: 'sdcard', mode: 'readwrite' });
+      const has = async n => { for await (const k of d.keys()) if (k === n) return true; return false; };
+      if (!(await has('anim') || await has('pesan') || await has('config.txt')) &&
+          !confirm('Folder ini sepertinya bukan SD card agreius Player (tidak ada folder anim/pesan). Tetap simpan di sini?')) return;
+      sdDir = d;
+    }
+    for (const [folder, name, data] of files) {
+      const dir = folder ? await sdDir.getDirectoryHandle(folder, { create: true }) : sdDir;
+      const w = await (await dir.getFileHandle(name, { create: true })).createWritable();
+      await w.write(data); await w.close();
+    }
+    $(msgEl).textContent = 'Tersimpan: ' + files.map(([f, n]) => '/' + (f ? f + '/' : '') + n).join(', ') + '. Eject SD card dulu sebelum dicabut.';
+  } catch (e) {
+    if (e.name !== 'AbortError') { sdDir = null; $(msgEl).textContent = ''; alert('Gagal menyimpan ke SD card: ' + e.message); }
+  }
+}
+const canSd = 'showDirectoryPicker' in window;
+$('sdAnim').hidden = $('sdPesan').hidden = !canSd;
+$('sdAnim').onclick = () => {
+  const n = cleanName($('name').value || baseName), folder = n === 'boot' ? '' : 'anim', files = [];
+  if (out.length) files.push([folder, n + '.bin', packBin(out)]);
+  if (wav) files.push([folder, n + '.wav', wav]);
+  if (files.length) sdSave(files, 'sdAnimMsg');
+};
+
+// ---------- pembuat pesan ----------
+const pv = $('pView'), pctx = pv.getContext('2d');
+const glyph = document.createElement('canvas'); glyph.width = W; glyph.height = H;
+const gctx = glyph.getContext('2d', { willReadFrequently: true });
+let pLines = [], pStart = [], pTotal = 0, pShown = 0, pTimer = 0;
+const TYPE_MS = 45;  // = type_ms bawaan firmware
+const pClean = s => [...s].filter(c => c === '\n' || c === '\t' || (c >= ' ' && c.codePointAt(0) <= 0xff)).join('');  // font alat: Latin-1 saja
+
+function pRender() {
+  let top = 0;
+  if (pShown < pTotal) { let cur = 0; while (cur + 1 < pLines.length && pStart[cur + 1] <= pShown) cur++; top = Math.max(0, cur - PLINES + 1); }
+  else top = Math.max(0, pLines.length - PLINES);
+  gctx.fillStyle = '#000'; gctx.fillRect(0, 0, W, H);
+  gctx.fillStyle = '#fff'; gctx.font = '10px monospace'; gctx.textBaseline = 'alphabetic';
+  for (let r = 0; r < PLINES && top + r < pLines.length; r++) {
+    const i = top + r, t = [...pLines[i]].slice(0, Math.max(0, Math.min(pShown - pStart[i], [...pLines[i]].length)));
+    t.forEach((c, k) => gctx.fillText(c, k * 6, 9 + r * 10));  // 6 px per huruf seperti font 6x10
+  }
+  if (pLines.length > PLINES) { const h = Math.max(4, Math.floor(64 * PLINES / pLines.length)); gctx.fillRect(127, Math.floor((64 - h) * top / (pLines.length - PLINES)), 1, h); }
+  const px = gctx.getImageData(0, 0, W, H).data, s = pv.width / W;
+  pctx.fillStyle = '#05070a'; pctx.fillRect(0, 0, pv.width, pv.height); pctx.fillStyle = '#f2f6ff';
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (px[(y * W + x) * 4] > 110) pctx.fillRect(x * s, y * s, s - 0.6, s - 0.6);
+}
+function pUpdate(replay) {
+  const raw = $('pText').value, txt = pClean(raw), bytes = new TextEncoder().encode(txt).length;
+  pLines = wrapPesan(txt); pStart = []; pTotal = 0;
+  for (const l of pLines) { pStart.push(pTotal); pTotal += [...l].length; }
+  $('pStat').textContent = `${bytes} / ${PMAX_BYTES} byte · ${pLines.length} baris · ${Math.max(1, Math.ceil(pLines.length / PLINES))} layar`;
+  $('pWarn').textContent = (txt !== raw ? 'Emoji/simbol khusus dibuang (tidak didukung layar). ' : '') + (bytes > PMAX_BYTES ? 'Terlalu panjang: alat hanya membaca 4096 byte pertama.' : '');
+  clearInterval(pTimer);
+  if (replay) { pShown = 0; pTimer = setInterval(() => { pShown = Math.min(pTotal, pShown + 1); pRender(); if (pShown >= pTotal) clearInterval(pTimer); }, TYPE_MS); }
+  else { pShown = pTotal; pRender(); }
+}
+$('pText').oninput = () => pUpdate(false);
+$('pReplay').onclick = () => pUpdate(true);
+$('pName').oninput = () => { const n = cleanName($('pName').value); $('pWhere').innerHTML = `Simpan ke SD card: <code>/pesan/${n}.txt</code>. Suara latar opsional: <code>/pesan/${n}.wav</code>.`; };
+const pData = () => new TextEncoder().encode(pClean($('pText').value).replace(/\r\n?/g, '\n'));
+$('pDl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([pData()], { type: 'text/plain' })); a.download = cleanName($('pName').value || 'pesan') + '.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+$('sdPesan').onclick = () => sdSave([['pesan', cleanName($('pName').value || 'pesan') + '.txt', pData()]], 'sdPesanMsg');
+pUpdate(false);
 
 </script>
 </body>

@@ -17,6 +17,33 @@
     --bg:#000; --surface:#0a0a0a; --line:#1d1d1d; --line-2:#2c2c2c;
     --fg:#f5f5f5; --mute:#a0a0a0; --dim:#5a5a5a; --acc:#ff6302; --oled:#e8f1ff;
     --r:14px; color-scheme:dark;
+    /* Dialog installer (ESP Web Tools, Material 3). Dialog menimpa --md-sys-color-surface/primary dengan putih & biru
+       di dalamnya, jadi warna diatur lewat token tiap komponen (tidak ditimpa) supaya ikut tema gelap-oranye web. */
+    --md-sys-color-on-surface:#f5f5f5; --md-sys-color-on-surface-variant:#a0a0a0; --md-sys-color-outline:#3a3a3a;
+    --md-sys-color-outline-variant:#262626; --md-sys-color-error:#ff6b6b; --md-sys-color-scrim:#000; --danger-color:#ff6b6b;
+    --md-ref-typeface-plain:Inter, system-ui, sans-serif; --md-ref-typeface-brand:Inter, system-ui, sans-serif;
+    --md-dialog-container-color:#0f0f0f; --md-dialog-container-shape:20px; --md-dialog-headline-color:#fff;
+    --md-dialog-supporting-text-color:#a0a0a0; --md-dialog-icon-color:#ff6302;
+    --md-list-container-color:transparent; --md-list-item-label-text-color:#f5f5f5; --md-list-item-label-text-weight:600;
+    --md-list-item-supporting-text-color:#8a8a8a; --md-list-item-leading-icon-color:#ff6302; --md-list-item-trailing-icon-color:#ff6302;
+    --md-list-item-hover-state-layer-color:#ff6302; --md-list-item-hover-state-layer-opacity:.1;
+    --md-list-item-pressed-state-layer-color:#ff6302; --md-list-item-one-line-container-height:60px; --md-list-item-two-line-container-height:68px;
+    --md-divider-color:#262626;
+    --md-text-button-label-text-color:#ff6302; --md-text-button-icon-color:#ff6302; --md-text-button-hover-label-text-color:#ff8a3d;
+    --md-text-button-hover-icon-color:#ff8a3d; --md-text-button-hover-state-layer-color:#ff6302; --md-text-button-pressed-label-text-color:#ff8a3d;
+    --md-text-button-pressed-icon-color:#ff8a3d; --md-text-button-label-text-weight:600;
+    --md-checkbox-outline-color:#5a5a5a; --md-checkbox-hover-outline-color:#ff6302; --md-checkbox-selected-container-color:#ff6302;
+    --md-checkbox-selected-hover-container-color:#ff6302; --md-checkbox-selected-pressed-container-color:#ff6302;
+    --md-checkbox-selected-icon-color:#000; --md-checkbox-selected-hover-icon-color:#000; --md-checkbox-selected-pressed-icon-color:#000;
+    --md-circular-progress-active-indicator-color:#ff6302;
+    --md-icon-button-icon-color:#a0a0a0; --md-icon-button-hover-icon-color:#fff;
+    --md-filled-field-container-color:#1c1c1c; --md-filled-text-field-container-color:#1c1c1c; --md-filled-select-text-field-container-color:#1c1c1c;
+    --md-filled-text-field-input-text-color:#f5f5f5; --md-filled-text-field-label-text-color:#a0a0a0; --md-filled-text-field-caret-color:#ff6302;
+    --md-filled-text-field-active-indicator-color:#3a3a3a; --md-filled-select-text-field-input-text-color:#f5f5f5;
+    --md-filled-select-text-field-label-text-color:#a0a0a0; --md-filled-select-text-field-active-indicator-color:#3a3a3a;
+    --md-filled-select-text-field-trailing-icon-color:#ff6302;
+    --md-menu-container-color:#1c1c1c; --md-menu-item-label-text-color:#f5f5f5; --md-menu-item-selected-container-color:#2a1607;
+    --md-menu-item-selected-label-text-color:#ffb27a; --md-menu-item-hover-state-layer-color:#ff6302;
   }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; scroll-padding-top:72px; }
@@ -50,6 +77,7 @@
   nav ul { display:flex; gap:4px; list-style:none; margin:0; padding:0; }
   nav ul a { display:block; padding:10px 12px; border-radius:8px; color:var(--mute); text-decoration:none; font-size:.9rem; font-weight:500; transition:color .2s, background .2s; }
   nav ul a:hover { color:var(--fg); background:#111; }
+  nav ul a[aria-current] { color:#000; background:var(--acc); }
 
   /* hero */
   .hero { position:relative; text-align:center; padding:72px 0 88px; overflow:hidden; }
@@ -77,6 +105,12 @@
   .coffee .zz { fill:var(--dim); font:700 7px Inter, sans-serif; animation:zz 3s ease-in-out infinite; }
   .coffee b { display:block; color:var(--fg); font-weight:600; font-size:.9rem; line-height:1.3; }
   .coffee small { display:block; font-size:.78rem; line-height:1.35; }
+  .coffee .tap { display:inline-flex; align-items:center; gap:4px; margin-top:3px; font-style:normal; font-size:.76rem; font-weight:600; color:var(--acc); }
+  .coffee .tap .ico { width:13px; height:13px; transition:transform .2s; }
+  .coffee:hover .tap .ico { transform:translateX(3px); }
+  .coffee:not(.full) { animation:invite 3.2s ease-out infinite; }
+  @keyframes invite { 0%, 60% { box-shadow:0 0 0 0 rgba(255,99,2,0); } 70% { box-shadow:0 0 0 0 rgba(255,99,2,.45); } 100% { box-shadow:0 0 0 12px rgba(255,99,2,0); } }
+  .coffee.full .tap { display:none; }
   .coffee.full { border-style:solid; border-color:var(--acc); }
   .coffee.full svg { animation:none; }
   .coffee.full .liq { transform:none; }
@@ -87,9 +121,10 @@
   @keyframes mugWobble { 0%, 86%, 100% { transform:rotate(0); } 89% { transform:rotate(-9deg); } 92% { transform:rotate(7deg); } 95% { transform:rotate(-4deg); } }
   @keyframes zz { 0%, 100% { opacity:0; transform:translate(0, 0); } 30%, 70% { opacity:1; } 100% { transform:translate(4px, -8px); } }
   @keyframes steam { 0% { opacity:0; transform:translateY(4px); } 30% { opacity:.9; } 100% { opacity:0; transform:translateY(-7px); } }
+  .qris { scroll-margin-top:24px; }  /* + scroll-padding 72px menu = bingkai & cahaya QRIS tidak terpotong */
   .qris.ping { animation:ping 1.4s ease-out 2; }
   @keyframes ping { 0% { box-shadow:0 0 0 0 rgba(255,99,2,.6); } 100% { box-shadow:0 0 0 22px rgba(255,99,2,0); } }
-  @media (prefers-reduced-motion:reduce) { .coffee svg, .coffee .zz, .coffee.full .steam, .qris.ping { animation:none; } .coffee.full .steam { opacity:.8; } .coffee .liq { transition:none; } }
+  @media (prefers-reduced-motion:reduce) { .coffee svg, .coffee .zz, .coffee.full .steam, .qris.ping, .coffee:not(.full) { animation:none; } .coffee.full .steam { opacity:.8; } .coffee .liq { transition:none; } }
 
   .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:0 26px;
          border-radius:12px; border:1px solid transparent; font-family:inherit; font-weight:600; font-size:.98rem; line-height:1; text-decoration:none; cursor:pointer;
@@ -112,8 +147,11 @@
   .device canvas { display:block; width:100%; aspect-ratio:2/1; background:#000; border-radius:8px; border:1px solid #151515;
                    image-rendering:pixelated; filter:drop-shadow(0 0 5px rgba(170,205,255,.18)); }
   .device .bar { display:flex; align-items:center; justify-content:space-between; margin-top:12px; color:var(--dim); font-size:.8rem; }
-  .device .keys { display:flex; gap:8px; }
-  .device .keys i { width:14px; height:14px; border-radius:50%; background:#1a1a1a; border:1px solid #262626; }
+  .snd { display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:0 12px; border-radius:99px; border:1px solid var(--line-2);
+         background:transparent; color:var(--mute); font:inherit; font-size:.8rem; font-weight:600; cursor:pointer; transition:color .2s, border-color .2s, background .2s; }
+  .snd:hover { color:var(--fg); border-color:#555; }
+  .snd .ico { width:16px; height:16px; }
+  .snd[aria-pressed=true] { color:#000; background:var(--acc); border-color:var(--acc); }
 
   /* section */
   section { border-top:1px solid var(--line); padding:88px 0; }
@@ -267,6 +305,7 @@
   <symbol id="s-wa" viewBox="0 0 24 24"><path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.3Z"/><path d="M9 8.5c-.3 3 3.2 6.6 6.4 6.4l.9-1.6-2-1.1-1 .9a4 4 0 0 1-2-2l.9-1-1.1-2Z"/></symbol>
   <symbol id="i-nav" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8z"/></symbol>
   <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2.5a1.5 1.5 0 0 0-1 2.6c.6.6.5 3.4-2.5 3.4Z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
 </svg>
@@ -279,7 +318,7 @@
       <li><a href="#rakit">Build</a></li>
       <li><a href="#install">Install</a></li>
       <li><a href="#beli">Shop</a></li>
-      <li><a href="#dukung">Donate</a></li>
+      <li><a href="#qris" data-spy="dukung">Donate</a></li>
       <li><a href="converter.html">Studio</a></li>
     </ul>
       <div class="soc nsoc">
@@ -303,7 +342,7 @@
         <g clip-path="url(#cupIn)"><rect class="liq" x="6" y="17" width="24" height="18"/></g>
         <path class="cup" d="M8 17h20v9a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7zM28 20h2.5a3.5 3.5 0 0 1 0 7H28M6 36h24"/>
       </svg>
-      <span><b id="cofT">Kopi developer: 0%</b><small id="cofS">tinggal ampas, kang ngodingnya mulai ngantuk</small></span>
+      <span><b id="cofT">Kopi developer: 0%</b><small id="cofS">tinggal ampas, kang ngodingnya mulai ngantuk</small><em class="tap">Ketuk untuk isi kopinya <svg class="ico"><use href="#i-arrow"/></svg></em></span>
     </button>
     <p class="lead">Hadiah kecil yang hidup: animasi, lagu, game, dan jam di layar OLED.</p>
     <div class="cta">
@@ -322,7 +361,7 @@
 
     <div class="device" aria-label="Contoh tampilan layar OLED">
       <canvas id="oled" width="512" height="256"></canvas>
-      <div class="bar"><span id="demoName">agreius Player</span><span class="keys" aria-hidden="true"><i></i><i></i></span></div>
+      <div class="bar"><span id="demoName">agreius Player</span><button class="snd" id="snd" type="button" aria-pressed="false"><svg class="ico"><use href="#i-mute"/></svg><span>Nyalakan suara</span></button></div>
     </div>
   </div>
 </header>
@@ -466,7 +505,7 @@
       <h2 class="reveal">100% gratis, tanpa syarat</h2>
       <p class="sub reveal">Semua fitur bisa dipakai tanpa bayar, dan donasi sepenuhnya sukarela. Kalau project ini bermanfaat, dukunganmu membantu project berikutnya jadi kenyataan: <b>Game retro ESP32-S3 &amp; animasi berwarna</b>.</p>
       <div class="donate">
-        <div class="card qris reveal">
+        <div class="card qris reveal" id="qris">
           <h3><svg class="ico"><use href="#i-heart"/></svg>Donasi lewat QRIS</h3>
           <a class="paper" href="qris.jpeg" target="_blank" rel="noopener" aria-label="Buka QRIS ukuran penuh"><img src="qris.jpeg" alt="QRIS AGREIUS.Lab, Service" width="1136" height="1598" loading="lazy"></a>
           <p>Scan pakai e-wallet atau m-banking apa saja (GoPay, OVO, DANA, ShopeePay, BCA, dll). Buka dari HP? Download gambarnya, lalu pilih dari galeri di aplikasi pembayaran.</p>
@@ -541,21 +580,25 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite">
   <span class="ok" aria-hidden="true">✓</span>
-  <p><b>Firmware terpasang!</b>Tekan RESET di board, logo agreius.lab akan muncul.</p>
+  <p><b>Firmware terpasang!</b>Alat menyala ulang sendiri dan logo agreius.lab muncul. Kalau layar tetap gelap, tekan RESET.</p>
   <button type="button" aria-label="Tutup" onclick="this.parentElement.classList.remove('show')">×</button>
 </div>
 
 <script>
 'use strict';
-// Pemberitahuan install selesai. ESP Web Tools tidak punya event "selesai" untuk halaman,
-// jadi status dialog dibaca langsung. ponytail: properti internal _installState, cek ulang kalau versi 12.3.1 diganti.
+// Pemberitahuan install selesai. ESP Web Tools tidak punya event "selesai" untuk halaman, jadi status dialog dibaca
+// langsung. ESP32-C3 (USB-JTAG): setelah flash, alat restart sendiri ke firmware baru lalu dialog meminta "pilih port"
+// lagi; tahap itu tidak perlu, jadi dialog ditutup otomatis.
+// ponytail: properti internal _installState / _state / _closeDialog, cek ulang kalau versi 12.3.1 diganti.
 new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(d => {
   if (d.tagName !== 'EWT-INSTALL-DIALOG') return;
   let done = false;
   const t = setInterval(() => {
     if (!d.isConnected) return clearInterval(t);
-    if (done || d._installState?.state !== 'finished') return;
+    const st = d._installState?.state;  // hanya setelah install di dialog ini (status port juga dipakai menu lain)
+    if (done || !st || (st !== 'finished' && d._state !== 'REQUEST_PORT_SELECTION')) return;
     done = true;
+    setTimeout(() => (d._closeDialog ? d._closeDialog() : d.remove()), 1500);
     const toast = document.getElementById('toast'), title = document.title;
     toast.classList.add('show');
     navigator.vibrate?.([200, 100, 200]);
@@ -569,7 +612,7 @@ fetch('firmware/manifest.json').then(r => r.json()).then(m => { document.getElem
 const coffee = document.getElementById('coffee');
 coffee.onclick = () => {
   const go = () => {
-    document.getElementById('dukung').scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
+    document.getElementById('qris').scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
     const q = document.querySelector('.qris'); q.classList.remove('ping'); void q.offsetWidth; q.classList.add('ping');
   };
   if (coffee.classList.contains('full')) return go();
@@ -588,6 +631,13 @@ shareBtn.onclick = async () => {
   const l = shareBtn.querySelector('span'); l.textContent = 'Link disalin'; setTimeout(() => { l.textContent = 'Share'; }, 2000);
 };
 
+// Menu aktif: kotak oranye di link bagian yang sedang terlihat (dan langsung saat diklik)
+const navLinks = [...document.querySelectorAll('nav ul a[href^="#"]')];
+const setCurrent = id => navLinks.forEach(a => a.toggleAttribute('aria-current', (a.dataset.spy || a.hash.slice(1)) === id));
+const spy = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && setCurrent(e.target.id)), { rootMargin: '-40% 0px -55% 0px' });
+document.querySelectorAll('header[id], section[id]').forEach(el => spy.observe(el));  // bagian tanpa link menu = tanpa penanda
+navLinks.forEach(a => a.addEventListener('click', () => setCurrent(a.dataset.spy || a.hash.slice(1))));
+
 const nav = document.getElementById('nav');
 addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), { passive: true });
 
@@ -595,8 +645,9 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 // Layar contoh: putar beberapa animasi .bin (format AGL1, sama dengan di SD card)
-const DEMOS = [['bruno', 'lirik lagu berjalan'], ['lagu_bintangku', 'karaoke: Bintangku'], ['jj_teks_mantap', 'teks kinetik'],
-               ['kata_gombal', 'kata gombal'], ['lagu_jingle_bells', 'karaoke: Jingle Bells'], ['jj_bot_dj', 'bot DJ']];
+// Layar contoh: animasi .bin (format AGL1, sama dengan SD card) + suaranya. Suara baru boleh diputar
+// setelah pengunjung mengetuk tombol (aturan browser). Tiap putaran animasi suara diulang dari awal, seperti di alat.
+const DEMOS = [['bruno', 'lirik lagu: Bruno'], ['jj_bot_dj', 'bot DJ'], ['jj_teks_mantap', 'teks kinetik: kamu pasti bisa']];
 const cv = document.getElementById('oled'), cx = cv.getContext('2d');
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function drawFrame(d, o) {
@@ -606,18 +657,48 @@ function drawFrame(d, o) {
     if (b) for (let k = 0; k < 8; k++) if (b >> k & 1) cx.fillRect(x * 4, (p * 8 + k) * 4, 3.7, 3.7);
   }
 }
+const snd = new Audio(), sndBtn = document.getElementById('snd');
+let soundOn = false, restart = () => {};
+const wait = ms => new Promise(ok => { const t = setTimeout(ok, Math.max(0, ms)); restart = () => { clearTimeout(t); ok('restart'); }; });
+sndBtn.onclick = () => {
+  soundOn = !soundOn;
+  sndBtn.setAttribute('aria-pressed', soundOn);
+  sndBtn.querySelector('use').setAttribute('href', soundOn ? '#i-speaker' : '#i-mute');
+  sndBtn.querySelector('span').textContent = soundOn ? 'Suara nyala' : 'Nyalakan suara';
+  if (!soundOn) snd.pause();
+  restart();  // mulai ulang animasi dari frame 0 supaya suara sinkron
+};
 (async () => {
+  const bins = {};
   for (let i = 0; ; i = (i + 1) % DEMOS.length) {
-    const r = await fetch('demo/' + DEMOS[i][0] + '.bin').catch(() => null);
-    if (!r || !r.ok) return;
-    const d = new Uint8Array(await r.arrayBuffer()), n = d[4] | d[5] << 8;
-    document.getElementById('demoName').textContent = DEMOS[i][1];
-    for (let t = 0, f = 0; t < 4500 || (f % n && t < 15000); f++) {  // 4,5-15 detik: putaran pendek selesai, lirik panjang dipotong
-      const o = 8 + (f % n) * 1026, dl = Math.max(30, d[o] | d[o + 1] << 8);
-      drawFrame(d, o + 2);
-      if (still) return;
-      await new Promise(r => setTimeout(r, dl)); t += dl;
+    const [name, label] = DEMOS[i];
+    if (!bins[name]) {
+      const r = await fetch('demo/' + name + '.bin').catch(() => null);
+      if (!r || !r.ok) return;
+      bins[name] = new Uint8Array(await r.arrayBuffer());
     }
+    const d = bins[name], n = d[4] | d[5] << 8;
+    const dl = Array.from({ length: n }, (_, f) => Math.max(20, d[8 + f * 1026] | d[9 + f * 1026] << 8)), total = dl.reduce((a, b) => a + b, 0);
+    document.getElementById('demoName').textContent = label;
+    for (let played = 0; ;) {  // satu putaran animasi per iterasi
+      const t0 = performance.now(), sound = soundOn;
+      if (sound) {
+        if (snd.dataset.n !== name) { snd.src = 'demo/' + name + '.wav'; snd.dataset.n = name; }
+        snd.currentTime = 0; snd.play().catch(() => {});
+      }
+      let cut = false;
+      for (let f = 0, due = 0; f < n; f++) {
+        drawFrame(d, 8 + f * 1026 + 2);
+        if (still) return;
+        due += dl[f];
+        if (await wait(due - (performance.now() - t0)) === 'restart') { cut = true; break; }
+        if (!sound && played + due >= 15000) break;  // tanpa suara: lirik panjang cukup 15 detik
+      }
+      if (cut) { played = 0; continue; }
+      played += total;
+      if (played >= (sound ? 9000 : 4500)) break;  // dengan suara: lagu utuh, animasi pendek diulang ±9 detik
+    }
+    if (soundOn) snd.pause();
   }
 })();
 </script>

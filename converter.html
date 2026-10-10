@@ -89,7 +89,17 @@ textarea { width:100%; min-height:200px; resize:vertical; padding:12px; border-r
 .klist { list-style:none; padding:0; margin:12px 0 0; font-size:.85rem; }
 .klist li { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
 .klist code { color:var(--muted); }
-.tabs { max-width:1120px; margin:0 auto; padding:24px 20px 0; display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+.tabs { max-width:1120px; margin:0 auto; padding:24px 20px 0; display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; }
+.tabs .soonb { position:absolute; top:8px; right:8px; font-style:normal; font-size:.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+               color:var(--accent); border:1px solid rgba(255,99,2,.45); border-radius:99px; padding:1px 6px; }
+.soon { border-style:dashed !important; }
+.soonbox { display:grid; place-items:center; text-align:center; gap:10px; padding:48px 20px; }
+.soonbox .ico { width:44px; height:44px; color:var(--accent); }
+.soonbox b { font-size:1.2rem; }
+.soonbox p { margin:0; color:var(--muted); max-width:52ch; }
+.topt.soon { cursor:default; justify-content:center; align-items:center; min-height:100%; color:var(--muted); opacity:.85; }
+.topt.soon .ico { width:26px; height:26px; color:var(--accent); }
+.topt.soon span { justify-content:center; text-align:center; flex-direction:column; gap:2px; }
 .tabs button { position:relative; display:grid; grid-template-columns:44px minmax(0, 1fr); gap:2px 14px; align-items:center; text-align:left;
                padding:14px 16px; min-height:72px; border-radius:16px; background:var(--panel); border:1px solid var(--line); overflow:hidden; }
 .tabs button::before { content:""; position:absolute; inset:0; opacity:0; transition:opacity .25s; pointer-events:none;
@@ -105,8 +115,19 @@ textarea { width:100%; min-height:200px; resize:vertical; padding:12px; border-r
 .tab { max-width:1120px; margin:0 auto; }
 .tab > .intro:first-child { padding-top:28px; }
 
-.fm { display:grid; gap:16px; grid-template-columns:minmax(0, 1fr) minmax(0, 1.5fr); grid-template-areas:"dev list" "add list"; grid-template-rows:auto 1fr; align-items:start; padding:0 20px 40px; }
-.fm-dev { grid-area:dev; } .fm-add { grid-area:add; } .fm-list { grid-area:list; }
+.fm { display:grid; gap:16px; grid-template-columns:minmax(0, 1fr) minmax(0, 1.5fr); grid-template-areas:"add list" "reset list"; grid-template-rows:auto 1fr; align-items:start; padding:0 20px 40px; }
+/* Bilah alat: tampil di semua tab, sekali hubungkan dipakai semua tab */
+.devbar { max-width:1120px; margin:14px auto 0; padding:0 20px; }
+.devbar .card { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; padding:12px 12px 12px 18px; }
+.devbar .dev { margin:0; flex:1; min-width:230px; }
+.devbar .usage { order:3; flex-basis:100%; margin:0; height:4px; }
+.devbar .usbbtn { width:auto; margin:0; padding:0 20px; min-height:44px; }
+.usbbtn.idle { background:rgba(255,99,2,.12); color:var(--accent); border-color:rgba(255,99,2,.4); }
+.usbbtn.idle:hover:not(:disabled) { background:rgba(255,99,2,.2); filter:none; }
+.fm-reset { grid-area:reset; }
+.dangerbtn { background:transparent !important; color:#ff7a7a !important; border-color:#5a2424 !important; }
+.dangerbtn:hover:not(:disabled) { background:#1d0b0b !important; filter:none !important; }
+.fm-add { grid-area:add; } .fm-list { grid-area:list; }
 .dev { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
 .fm-add h2 { margin-bottom:10px; }
 .dev .dot { width:10px; height:10px; flex:none; border-radius:50%; background:var(--dim); }
@@ -141,7 +162,7 @@ input[type=search] { width:100%; min-height:40px; padding:8px 12px; border-radiu
 .tgroup + .tgroup { margin-top:16px; }
 .tgroup h2 { display:flex; align-items:center; gap:8px; }
 .tgroup h2 .ico { width:16px; height:16px; color:var(--accent); }
-.tgrid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:10px; }
+.tgrid { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px; }
 .topt { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:8px; border-radius:12px; background:var(--field); border:1px solid var(--line); text-align:left; }
 .topt img { display:block; width:100%; height:auto; image-rendering:pixelated; background:#000; border-radius:5px; border:1px solid #1a1a1a;
             filter:drop-shadow(0 0 3px rgba(170,205,255,.15)); }
@@ -161,12 +182,13 @@ input[type=search] { width:100%; min-height:40px; padding:8px 12px; border-radiu
   .tapply p { display:none; }
   .tapply .usbbtn { width:100%; }
 }
-@media (max-width:860px) { .fm { grid-template-columns:minmax(0, 1fr); grid-template-areas:"dev" "list" "add"; } }
+@media (max-width:860px) { .fm { grid-template-columns:minmax(0, 1fr); grid-template-areas:"list" "add" "reset"; } .devbar .usbbtn { width:100%; } }
 @media (max-width:640px) {
-  .tabs { gap:8px; padding-top:16px; }
-  .tabs button { grid-template-columns:1fr; justify-items:center; text-align:center; padding:12px 6px; min-height:0; gap:6px; }
-  .tabs .ti { grid-row:auto; width:36px; height:36px; }
-  .tabs b { font-size:.78rem; }
+  .tabs { gap:6px; padding-top:16px; }
+  .tabs button { grid-template-columns:1fr; justify-items:center; text-align:center; padding:10px 3px; min-height:0; gap:5px; }
+  .tabs .ti { grid-row:auto; width:34px; height:34px; }
+  .tabs b { font-size:.7rem; }
+  .tabs .soonb { top:3px; right:3px; font-size:.5rem; padding:0 4px; }
   .tabs small { display:none; }
 }
 @media (max-width:860px) { .pgrid { grid-template-columns:minmax(0, 1fr); } }
@@ -222,7 +244,17 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
   <button type="button" role="tab" data-tab="anim"><span class="ti"><svg class="ico"><use href="#i-film"/></svg></span><b>Animation</b><small>GIF, foto, video, musik</small></button>
   <button type="button" role="tab" data-tab="pesan"><span class="ti"><svg class="ico"><use href="#i-msg"/></svg></span><b>Message</b><small>Pesan teks berjalan</small></button>
   <button type="button" role="tab" data-tab="tema"><span class="ti"><svg class="ico"><use href="#i-palette"/></svg></span><b>Themes</b><small>Jam, navigasi, notifikasi</small></button>
+  <button type="button" role="tab" data-tab="game"><span class="ti"><svg class="ico"><use href="#i-game"/></svg></span><b>Games</b><small>Tambah game dari SD</small><em class="soonb">Soon</em></button>
   <button type="button" role="tab" data-tab="alat"><span class="ti"><svg class="ico"><use href="#i-folder"/></svg></span><b>File Manager</b><small>Isi SD card di alat</small></button>
+</div>
+
+<div class="devbar">
+  <div class="card">
+    <div class="dev" id="dev"><span class="dot"></span><div><b id="devName">Alat belum terhubung</b><small id="devSub">Colok kabel USB-C (HP: kabel OTG), lalu tekan Hubungkan.</small></div></div>
+    <div class="usage" id="sdBarWrap" hidden><i id="sdBar"></i></div>
+    <button class="usbbtn idle" id="usbLs" type="button" hidden><svg class="ico"><use href="#i-refresh"/></svg><span>Hubungkan alat</span></button>
+    <p class="hint" id="noUsb" hidden style="margin:0">Butuh Chrome atau Edge di laptop, atau Chrome di HP Android, dan halaman dibuka lewat <b>https://</b>.</p>
+  </div>
 </div>
 
 <div class="tab" id="tab-anim" role="tabpanel">
@@ -341,18 +373,26 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
   </div>
 </section>
 
+<section class="tab" id="tab-game" role="tabpanel" hidden>
+  <div class="intro">
+    <h1>Games</h1>
+    <p>Tambah game baru dari SD card, tanpa install ulang firmware.</p>
+  </div>
+  <div style="padding:0 20px 40px">
+    <div class="card soon soonbox">
+      <svg class="ico"><use href="#i-game"/></svg>
+      <b>Segera hadir</b>
+      <p>Fitur ini sedang dikembangkan dan akan datang lewat update. Sementara itu, 9 game bawaan sudah bisa dimainkan di menu Game alat: Flappy Bird, Dino Jump, Snake, Pong, Breakout, Tumpuk, Heli Gua, Duel Refleks, dan Ingat Pola.</p>
+    </div>
+  </div>
+</section>
+
 <section class="tab" id="tab-alat" role="tabpanel" hidden>
   <div class="intro">
     <h1>File Manager</h1>
     <p>Lihat, tambah, dan hapus isi SD card di alat lewat kabel USB, tanpa mencabut kartu.</p>
   </div>
   <div class="fm">
-    <div class="card fm-dev">
-      <div class="dev" id="dev"><span class="dot"></span><div><b id="devName">Alat belum terhubung</b><small id="devSub">Colok kabel USB-C (HP: kabel OTG), lalu tekan Hubungkan.</small></div></div>
-      <button class="usbbtn" id="usbLs" type="button" hidden><svg class="ico"><use href="#i-usb"/></svg><span>Hubungkan alat</span></button>
-      <p class="hint" id="noUsb" hidden>Butuh Chrome atau Edge di laptop, atau Chrome di HP Android, dan halaman dibuka lewat <b>https://</b>.</p>
-      <div class="usage" id="sdBarWrap" hidden><i id="sdBar"></i></div>
-    </div>
     <div class="card fm-add">
       <h2>Tambah file</h2>
       <label class="drop" id="kDrop">
@@ -365,6 +405,12 @@ footer { text-align:center; color:var(--dim); font-size:.82rem; padding:8px 20px
       <button class="usbbtn" id="usbKirim" type="button" disabled hidden><svg class="ico"><use href="#i-usb"/></svg>Kirim ke alat (USB)</button>
       <button class="sdbtn" id="sdKirim" type="button" disabled hidden><svg class="ico"><use href="#i-sd"/></svg>Simpan ke SD card (card reader)</button>
       <p class="hint ok" id="kMsg"></p>
+    </div>
+    <div class="card fm-reset">
+      <h2>Reset SD card</h2>
+      <p class="hint" style="margin:0 0 12px">Format ulang kartu (FAT32) lalu isi lagi dengan paket bawaan: 44 animasi, pesan, suara, dan pengaturan. Pakai saat kartu baru atau ada folder rusak. <b>Semua isi lama terhapus.</b></p>
+      <button class="usbbtn dangerbtn" id="usbFormat" type="button" hidden><svg class="ico"><use href="#i-refresh"/></svg>Format &amp; isi ulang</button>
+      <p class="hint ok" id="fmtMsg"></p>
     </div>
     <div class="card fm-list">
       <div class="chips" role="tablist" aria-label="Jenis file" id="chips">
@@ -597,6 +643,24 @@ function wrapPesan(txt) {
     out.push(cur.join(''));  // paragraf kosong = baris kosong
   }
   while (out.length && !out[out.length - 1]) out.pop();
+  return out;
+}
+
+// ---------- buka .zip (stored / deflate) memakai DecompressionStream bawaan browser ----------
+async function unzip(buf) {  // → [[path, Uint8Array]], folder dilewati
+  const v = new DataView(buf), u8 = new Uint8Array(buf), out = [];
+  let e = buf.byteLength - 22;
+  while (e >= 0 && v.getUint32(e, true) !== 0x06054b50) e--;  // akhir central directory
+  if (e < 0) throw new Error('file zip rusak');
+  for (let i = 0, p = v.getUint32(e + 16, true); i < v.getUint16(e + 10, true); i++) {
+    const method = v.getUint16(p + 10, true), size = v.getUint32(p + 20, true), nl = v.getUint16(p + 28, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nl)), lo = v.getUint32(p + 42, true);
+    p += 46 + nl + v.getUint16(p + 30, true) + v.getUint16(p + 32, true);
+    if (name.endsWith('/')) continue;
+    const start = lo + 30 + v.getUint16(lo + 26, true) + v.getUint16(lo + 28, true), raw = u8.subarray(start, start + size);
+    out.push([name, method === 0 ? raw.slice() :
+      new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer())]);
+  }
   return out;
 }
 
@@ -972,10 +1036,13 @@ async function usbTask(msgEl, fn) {  // satu perintah USB pada satu waktu
   if (usbBusy) return;
   usbBusy = true;
   const btns = document.querySelectorAll('.usbbtn, .sdlist button'); btns.forEach(b => b.disabled = true);
-  try { await usbOpen(msgEl); await fn(); }
-  catch (e) {
-    await usbClose();
+  try {
+    const fresh = !usb;
+    if (fresh) { await usbOpen('devSub'); await sdLs().catch(e => devStatus('SD card bermasalah: ' + e.message)); }
+    await fn(fresh);
+  } catch (e) {
     $(msgEl).textContent = '';
+    await usbClose();
     if (e.name !== 'NotFoundError') alert('Gagal: ' + e.message);  // NotFoundError = batal pilih port
   }
   usbBusy = false;
@@ -992,7 +1059,9 @@ function devStatus(sub) {
   $('dev').classList.toggle('on', !!usb);
   $('devName').textContent = usb ? `agreius Player v${usb.ver || '?'} terhubung` : 'Alat belum terhubung';
   $('devSub').textContent = sub || (usb ? 'Siap. Tambah atau hapus file kapan saja.' : 'Colok kabel USB-C (HP: kabel OTG), lalu tekan Hubungkan.');
-  $('usbLs').lastChild.textContent = usb ? 'Muat ulang' : 'Hubungkan alat';
+  $('usbLs').lastChild.textContent = usb ? 'SD card terhubung' : 'Hubungkan alat';
+  $('usbLs').classList.toggle('idle', !usb);
+  $('usbLs').title = usb ? 'Muat ulang isi SD card' : '';
 }
 
 // Kelompokkan per nama: animasi = .bin + .wav (suara) jadi satu baris
@@ -1053,20 +1122,25 @@ function fmRender() {
   if (!items.length) list.innerHTML = `<li class="empty"><svg class="ico"><use href="#i-folder"/></svg>${q ? 'Tidak ada yang cocok dengan "' + q.replace(/[<>&"]/g, '') + '".' : 'Belum ada file di sini.'}</li>`;
 }
 
-async function sdLs() {
+async function sdLs(retry = 1) {
   if (usb.fm !== 'fm') throw new Error('firmware di alat masih versi lama. Install ulang dulu di halaman utama (Install firmware) supaya daftar file lengkap.');
-  const files = [], games = [], temas = {};
+  const files = [], games = [], temas = {}, broken = [];
   for (let start = 0; ;) {  // per halaman 40 file: antrean USB di alat tidak pernah penuh
     await usbWrite(`@LS ${start}\n`);
     for (;;) {
-      const l = await usbLine(30000, /^(F |G |T |MORE |END |ERR)/);  // kartu besar: hitung ruang kosong bisa beberapa detik
+      const l = await usbLine(30000, /^(F |G |T |W |MORE |END |ERR)/);  // kartu besar: hitung ruang kosong bisa beberapa detik
       if (!l) throw new Error('alat tidak menjawab');
       if (l.startsWith('ERR')) throw new Error(l.slice(4));
       if (l.startsWith('F ')) { const sp = l.lastIndexOf(' '); files.push([l.slice(2, sp), +l.slice(sp + 1)]); continue; }
       if (l.startsWith('G ')) { games.push(l.slice(2)); continue; }
       if (l.startsWith('T ')) { const [, k, v] = l.split(' '); temas[k] = v; continue; }
-      if (l.startsWith('MORE ')) { start = +l.slice(5); $('lsMsg').textContent = `Membaca isi SD card… ${files.length} file`; break; }
-      const [, used, total] = l.split(' ').map(Number);
+      if (l.startsWith('W ')) { broken.push(l.split(' ')[1]); continue; }  // folder rusak di kartu
+      if (l.startsWith('MORE ')) { start = +l.slice(5); $('devSub').textContent = `Membaca isi SD card… ${files.length} file`; break; }
+      const [, used, total, count] = l.split(' ').map(Number);
+      if (count >= 0 && files.length !== count) {  // ada baris yang hilang di jalan
+        if (retry) return sdLs(retry - 1);
+        throw new Error(`daftar file tidak lengkap (${files.length} dari ${count}). Coba tekan tombol SD card lagi.`);
+      }
       fm = fmModel(files, games, temas);
       Object.assign(temaDev, temas); Object.assign(temaSel, temas); temaRender();
       $('sdBarWrap').hidden = false;
@@ -1074,13 +1148,20 @@ async function sdLs() {
       devStatus(`SD card: ${fmtSize(used)} terpakai dari ${fmtSize(total)}`);
       $('lsMsg').textContent = '';
       fmRender();
+      if (broken.length) {
+        const msg = `Folder ${broken.join(', ')} di SD card rusak (tidak bisa dibaca), jadi isinya tidak tampil dan file baru tidak bisa disimpan ke sana. Perbaiki: tekan "Format & isi ulang" di File Manager (semua isi kartu diganti paket bawaan), atau format kartu di laptop (FAT32) lalu salin isi sdcard.zip.`;
+        $('fmNote').textContent = msg;
+        devStatus('SD card bermasalah: folder ' + broken.join(', ') + ' rusak');
+        alert(msg);
+      }
       return;
     }
   }
 }
-function usbSend(files, msgEl) {  // files: [[folder ('' = utama), nama, Uint8Array]]
-  return usbTask(msgEl, async () => {
-    for (const [folder, name, data] of files) {
+async function putFiles(files, msgEl) {  // files: [[folder ('' = utama), nama, Uint8Array]]; koneksi sudah terbuka
+  const total = files.reduce((a, f) => a + f[2].length, 0) || 1;
+  let sent = 0;
+  for (const [k, [folder, name, data]] of files.entries()) {
       const path = '/' + (folder ? folder + '/' : '') + name;
       await usbWrite(`@PUT ${path} ${data.length}\n`);
       let l = await usbLine(5000, /^(OK|ERR)/);
@@ -1089,11 +1170,16 @@ function usbSend(files, msgEl) {  // files: [[folder ('' = utama), nama, Uint8Ar
         await usbWrite(data.subarray(o, o + 1024));
         l = await usbLine(5000, /^(K|ERR)/);
         if (l !== 'K') throw new Error(l ? l.slice(4) : 'alat berhenti menjawab');
-        if (o % 32768 === 0) $(msgEl).textContent = `Mengirim ${path}… ${Math.round(o * 100 / data.length)}%`;
+        if (o % 32768 === 0) $(msgEl).textContent = `Mengirim ${files.length > 1 ? `file ${k + 1}/${files.length} · ` : ''}${path} · ${Math.round((sent + o) * 100 / total)}%`;
       }
+      sent += data.length;
       l = await usbLine(5000, /^(DONE|ERR)/);
       if (l !== 'DONE') throw new Error(l ? l.slice(4) : 'alat tidak mengonfirmasi');
-    }
+  }
+}
+function usbSend(files, msgEl) {
+  return usbTask(msgEl, async () => {
+    await putFiles(files, msgEl);
     await sdLs();  // daftar isi SD langsung ikut diperbarui
     $(msgEl).textContent = 'Terkirim ke alat: ' + files.map(([f, n]) => '/' + (f ? f + '/' : '') + n).join(', ') + '. Buka menu Animasi/Pesan di alat.';
   });
@@ -1103,7 +1189,21 @@ const canSd = 'showDirectoryPicker' in window, canUsb = isSecureContext && ('ser
 $('sdAnim').hidden = $('sdPesan').hidden = $('sdKirim').hidden = !canSd;
 $('usbAnim').hidden = $('usbPesan').hidden = $('usbKirim').hidden = $('usbLs').hidden = $('usbTema').hidden = !canUsb;
 $('noUsb').hidden = canUsb;
-$('usbLs').onclick = () => usbTask('lsMsg', async () => { $('lsMsg').textContent = 'Membaca isi SD card…'; await sdLs(); });
+$('usbFormat').hidden = !canUsb;
+$('usbFormat').onclick = () => confirm('Semua isi SD card akan DIHAPUS, lalu diisi ulang dengan paket bawaan agreius Player (±22 MB, beberapa menit). Lanjutkan?') && usbTask('fmtMsg', async () => {
+  $('fmtMsg').textContent = 'Mengunduh paket SD card…';  // diunduh dulu: kalau internet putus, kartu belum terhapus
+  const r = await fetch('sdcard.zip');
+  if (!r.ok) throw new Error('sdcard.zip tidak bisa diunduh');
+  const files = (await unzip(await r.arrayBuffer())).map(([p, d]) => { const i = p.lastIndexOf('/'); return [p.slice(0, Math.max(0, i)), p.slice(i + 1), d]; });
+  $('fmtMsg').textContent = 'Memformat SD card… (±1 menit, jangan cabut kabel)';
+  await usbWrite('@FORMAT YA\n');
+  const ok = await usbLine(300000, /^(OK|ERR)/);
+  if (ok !== 'OK') throw new Error(ok ? ok.slice(4) : 'alat tidak menjawab saat memformat (firmware lama? install ulang dulu)');
+  await putFiles(files, 'fmtMsg');
+  await sdLs();
+  $('fmtMsg').textContent = `SD card siap: ${files.length} file bawaan terpasang.`;
+});
+$('usbLs').onclick = () => usbTask('devSub', fresh => fresh || sdLs());
 $('chips').onclick = e => { const b = e.target.closest('button'); if (b) { fmKind = b.dataset.k; fmRender(); } };
 $('fmQ').oninput = fmRender;
 
@@ -1119,9 +1219,11 @@ const temaSel = { tema_jam: 'modern', tema_nav: 'modern', tema_notif: 'modern' }
 $('tGroups').innerHTML = TEMA_GROUPS.map(g => `<div class="card tgroup"><h2><svg class="ico"><use href="#${g.icon}"/></svg>${g.label}</h2><div class="tgrid">` +
   TEMA_IDS.map((t, i) => `<button type="button" class="topt" data-key="${g.key}" data-v="${t}">` +
     g.imgs.map(s => `<img src="themes/${s}-${t}.png" alt="${g.label} tema ${TEMA_NAME[t]}" width="128" height="64" loading="lazy">`).join('') +
-    `<span>${TEMA_NAME[t]} <em>0${i + 1}</em></span></button>`).join('') + '</div></div>').join('');
+    `<span>${TEMA_NAME[t]} <em>0${i + 1}</em></span></button>`).join('') +
+  '<button type="button" class="topt soon" disabled><svg class="ico"><use href="#i-palette"/></svg><span>Tema baru<em>Segera hadir</em></span></button>' +
+  '</div></div>').join('');
 function temaRender() {
-  document.querySelectorAll('.topt').forEach(b => {
+  document.querySelectorAll('.topt:not(.soon)').forEach(b => {
     b.setAttribute('aria-pressed', temaSel[b.dataset.key] === b.dataset.v);
     b.querySelector('.now')?.remove();
     if (temaDev[b.dataset.key] === b.dataset.v) b.insertAdjacentHTML('afterbegin', '<b class="now">DI ALAT</b>');
@@ -1149,7 +1251,7 @@ function showTab(t) {
   history.replaceState(null, '', '#' + t);
 }
 document.querySelector('.tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); };
-showTab({ pesan: 'pesan', alat: 'alat', kirim: 'alat', tema: 'tema' }[location.hash.slice(1)] || 'anim');
+showTab({ pesan: 'pesan', alat: 'alat', kirim: 'alat', tema: 'tema', game: 'game' }[location.hash.slice(1)] || 'anim');
 const animFiles = () => {
   const n = cleanName($('name').value || baseName), folder = 'anim', files = [];
   if (out.length) files.push([folder, n + '.bin', packBin(out)]);

@@ -87,6 +87,12 @@
   .logo { width:min(620px, 88vw); height:auto; display:block; margin:0 auto; }
   .lead { margin:28px auto 0; max-width:34ch; color:var(--mute); font-size:clamp(1.02rem, 2.4vw, 1.15rem); }
   .cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:36px; }
+  .cta-sub { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:12px; }
+  .btn.sm { min-height:44px; padding:0 18px; font-size:.9rem; font-weight:500; color:var(--mute); }
+  .btn.sm:hover { color:var(--fg); }
+  .pinbtn small { font-weight:500; color:var(--mute); }
+  .pinbtn.chg { border-color:var(--acc); }
+  .pinbtn.chg small { color:var(--acc); }
   /* badge kecil di bawah tombol install */
   .badges { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; list-style:none; margin:20px 0 0; padding:0; }
   .badges li { display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 10px; border:1px solid var(--line); border-radius:99px;
@@ -132,6 +138,7 @@
   .btn:active { transform:scale(.98); }
   .btn.primary { background:var(--acc); color:#000; }
   .btn.primary:hover { filter:brightness(1.1); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; filter:none; }
   .btn.ghost { background:transparent; color:var(--fg); border-color:var(--line-2); }
   .btn.ghost:hover { border-color:#555; background:#0d0d0d; }
   .btn.wa { background:#25d366; color:#04210f; }
@@ -221,6 +228,21 @@
   .toast p { margin:0; flex:1; font-size:.94rem; color:var(--mute); }
   .toast p b { display:block; color:var(--fg); font-size:1rem; }
   .toast button { background:none; border:0; color:var(--mute); font-size:1.4rem; cursor:pointer; padding:4px 8px; min-height:44px; }
+  /* pinout: ganti pin sebelum install (web menulis pin ke .bin) */
+  .pins { margin-top:16px; }
+  .pins .sub2 { color:var(--mute); font-size:.94rem; margin:10px 0 0; }
+  .pgrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:14px; margin-top:18px; }
+  .pgrid fieldset { border:1px solid var(--line); border-radius:12px; padding:8px 14px 14px; margin:0; min-width:0; }
+  .pgrid legend { padding:0 6px; font-weight:600; font-size:.92rem; }
+  .pgrid label { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px; font-size:.9rem; color:var(--mute); }
+  .pgrid select { flex:0 0 132px; min-height:44px; background:#141414; color:var(--fg); border:1px solid var(--line-2); border-radius:10px; padding:0 10px; font:inherit; cursor:pointer; }
+  .pgrid select.chg { border-color:var(--acc); }
+  .pgrid select[aria-invalid="true"] { border-color:#ff6b6b; }
+  .perr { display:block; color:#ff6b6b; font-size:.8rem; text-align:right; }
+  .perr:empty { display:none; }
+  .pfoot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; }
+  .pmsg { margin:0; color:var(--mute); font-size:.92rem; flex:1 1 260px; }
+  .pmsg.bad { color:#ff6b6b; }
   .card.action { display:flex; flex-direction:column; }
   .card.action .btn { margin-top:24px; align-self:flex-start; }
 
@@ -346,12 +368,16 @@
     </button>
     <p class="lead">Hadiah kecil yang hidup: animasi, lagu, game, dan jam di layar OLED.</p>
     <div class="cta">
+      <a class="btn ghost pinbtn" id="pinBtn" href="#pinout"><svg class="ico"><use href="#i-cpu"/></svg>Atur pin kabel <small id="pinState">(bawaan)</small></a>
       <esp-web-install-button manifest="firmware/manifest.json">
         <button slot="activate" class="btn primary"><svg class="ico"><use href="#i-plug"/></svg>Install firmware</button>
         <p slot="unsupported" class="warn">Browser ini belum bisa install. Pakai <b>Chrome</b> atau <b>Edge</b> di laptop, atau <b>Chrome</b> di HP Android.</p>
         <p slot="not-allowed" class="warn">Tombol install hanya muncul jika halaman dibuka lewat <b>https://</b>. Buka link resmi web ini di Chrome, bukan alamat IP laptop.</p>
       </esp-web-install-button>
-      <a class="btn ghost" href="#install">Cara install</a>
+    </div>
+    <div class="cta-sub">
+      <a class="btn ghost sm" href="#install"><svg class="ico"><use href="#i-doc"/></svg>Cara install</a>
+      <a class="btn ghost sm" href="#rakit"><svg class="ico"><use href="#i-board"/></svg>Gambar wiring</a>
     </div>
     <ul class="badges">
       <li><svg class="ico"><use href="#i-check"/></svg>100% gratis</li>
@@ -453,6 +479,15 @@
             <li><span>Buka halaman ini di <b>Chrome</b>, ketuk <b>Install firmware</b>, lalu izinkan akses USB.</span></li>
             <li><span>Jangan kunci layar sampai selesai, lalu tekan <b>RESET</b>.</span></li>
           </ol>
+        </div>
+      </div>
+      <div class="card pins reveal" id="pinout">
+        <div class="head"><svg class="ico"><use href="#i-cpu"/></svg><h3>Atur pin kabel</h3><span class="tag">ESP32-C3 Super Mini</span></div>
+        <p class="sub2">Merakit persis seperti gambar wiring? <b>Tidak perlu diubah</b>, langsung Install. Kalau ada kabel yang kamu colok ke pin lain, pilih nomor pinnya di sini <b>sebelum</b> klik Install firmware.</p>
+        <div class="pgrid" id="pins"></div>
+        <div class="pfoot">
+          <p class="pmsg" id="pinMsg" role="status" aria-live="polite">Memakai pin bawaan (sesuai gambar wiring).</p>
+          <button class="btn ghost" id="pinReset" type="button">Kembalikan bawaan</button>
         </div>
       </div>
       <div class="center reveal">
@@ -584,6 +619,7 @@
   <button type="button" aria-label="Tutup" onclick="this.parentElement.classList.remove('show')">×</button>
 </div>
 
+<script src="kopi.js" defer></script>
 <script>
 'use strict';
 // Pemberitahuan install selesai. ESP Web Tools tidak punya event "selesai" untuk halaman, jadi status dialog dibaca
@@ -602,11 +638,102 @@ new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(d => {
     const toast = document.getElementById('toast'), title = document.title;
     toast.classList.add('show');
     navigator.vibrate?.([200, 100, 200]);
+    window.kopiUse?.(3000);
     document.title = '✓ Firmware terpasang';
     setTimeout(() => { toast.classList.remove('show'); document.title = title; }, 12000);
   }, 400);
 }))).observe(document.body, { childList: true });
 fetch('firmware/manifest.json').then(r => r.json()).then(m => { document.getElementById('ver').textContent = 'v' + m.version; }).catch(() => {});
+
+// ---------- pin firmware ----------
+// Firmware menyimpan pin di 11 byte setelah tanda "AGLPIN1\0" (struct Pins di src/app.h, urutan sama dengan PIN_DEF).
+// Ganti byte itu di .bin gabungan (image aplikasi di 0x10000), lalu hitung ulang checksum + SHA-256 image supaya bootloader menerimanya.
+const PIN_DEF = [20, 21, 10, 8, 4, 5, 6, 7, 0, 1, 3];
+async function patchPins(bin, pins, app = 0x10000) {
+  const tag = [65, 71, 76, 80, 73, 78, 49, 0];  // "AGLPIN1\0"
+  let at = -1;
+  for (let i = bin.indexOf(65, app); i >= 0 && at < 0; i = bin.indexOf(65, i + 1)) if (tag.every((b, k) => bin[i + k] === b)) at = i + 8;
+  if (at < 0 || bin[app] !== 0xE9) throw new Error('file firmware di web ini masih versi lama yang belum bisa ganti pin');
+  bin = bin.slice();
+  bin.set(pins, at);
+  const v = new DataView(bin.buffer);
+  let o = app + 24, ck = 0xEF;  // header image 24 byte, lalu tiap segmen: alamat (4) + panjang (4) + data
+  for (let n = bin[app + 1]; n--;) {
+    const len = v.getUint32(o + 4, true);
+    o += 8;
+    for (const e = o + len; o < e; o++) ck ^= bin[o];
+  }
+  o += 15 - (o - app) % 16;  // checksum = byte terakhir blok 16 byte
+  bin[o++] = ck;
+  if (bin[app + 23]) bin.set(new Uint8Array(await crypto.subtle.digest('SHA-256', bin.subarray(app, o))), o);
+  return bin;
+}
+// ---------- akhir pin firmware ----------
+
+const PIN_GROUPS = [  // nama ramah + tulisan di modulnya
+  ['Layar OLED', ['Data (SDA)', 'Clock (SCL)']],
+  ['Tombol', ['Tombol 1 (geser)', 'Tombol 2 (pilih)']],
+  ['Modul microSD', ['Clock (SCK)', 'Data keluar (MISO)', 'Data masuk (MOSI)', 'Pilih kartu (CS)']],
+  ['Speaker (MAX98357A)', ['Clock (BCLK)', 'Kiri-kanan (LRC)', 'Data suara (DIN)']]];
+const PIN_LABEL = PIN_GROUPS.flatMap(([g, ps]) => ps.map(p => g + ': ' + p));
+const GPIO = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21];  // GPIO 11-17 = flash, 18/19 = USB
+let pins = PIN_DEF.slice(), fwBin = null, pinUrls = [], pinSeq = 0;
+try { const s = JSON.parse(localStorage.getItem('agl_pins')); if (Array.isArray(s) && s.length === 11 && s.every(p => GPIO.includes(p))) pins = s; } catch {}
+{
+  let k = 0;
+  document.getElementById('pins').innerHTML = PIN_GROUPS.map(([g, ps]) => `<fieldset><legend>${g}</legend>` + ps.map(p => {
+    const i = k++;
+    return `<label for="pin${i}">${p}<select id="pin${i}" data-i="${i}" aria-describedby="pe${i}">` +
+      GPIO.map(n => `<option value="${n}">GPIO ${n}${n === 9 ? ' (BOOT)' : ''}</option>`).join('') + `</select></label><small class="perr" id="pe${i}"></small>`;
+  }).join('') + '</fieldset>').join('');
+}
+const pinSel = [...document.querySelectorAll('#pins select')];
+const installBtns = () => document.querySelectorAll('esp-web-install-button');
+function setManifest(url, ok) {
+  installBtns().forEach(b => { b.setAttribute('manifest', url); b.querySelector('[slot=activate]').disabled = !ok; });  // ESP Web Tools membaca atribut ini saat diklik
+}
+async function pinApply() {
+  const my = ++pinSeq, msg = document.getElementById('pinMsg');
+  let bad = false;
+  pinSel.forEach((el, i) => {
+    el.value = pins[i];
+    el.classList.toggle('chg', pins[i] !== PIN_DEF[i]);
+    const j = pins.findIndex((p, k) => p === pins[i] && k !== i);
+    el.setAttribute('aria-invalid', j >= 0);
+    document.getElementById('pe' + i).textContent = j >= 0 ? 'Sama dengan ' + PIN_LABEL[j] : '';
+    bad ||= j >= 0;
+  });
+  try { localStorage.setItem('agl_pins', JSON.stringify(pins)); } catch {}
+  const custom = pins.some((p, i) => p !== PIN_DEF[i]);
+  document.getElementById('pinBtn').classList.toggle('chg', custom || bad);
+  document.getElementById('pinState').textContent = bad ? '(ada yang bentrok)' : custom ? '(sudah diubah)' : '(bawaan)';
+  msg.classList.toggle('bad', bad);
+  pinUrls.forEach(URL.revokeObjectURL); pinUrls = [];
+  if (bad) { setManifest('firmware/manifest.json', false); msg.textContent = 'Ada pin yang dipakai dua kali. Perbaiki dulu sebelum install.'; return; }
+  if (!custom) { setManifest('firmware/manifest.json', true); msg.textContent = 'Memakai pin bawaan (sesuai gambar wiring).'; return; }
+  msg.textContent = 'Menyiapkan firmware dengan pin kamu…';
+  setManifest('firmware/manifest.json', false);
+  try {
+    fwBin ||= Promise.all([fetch('firmware/agreius-player.bin').then(r => r.ok ? r.arrayBuffer() : Promise.reject(new Error('firmware tidak bisa diunduh'))),
+                           fetch('firmware/manifest.json').then(r => r.json())]);
+    const [fw, man] = await fwBin, bin = await patchPins(new Uint8Array(fw), pins);
+    if (my !== pinSeq) return;  // pin sudah diganti lagi selagi menunggu
+    const m = structuredClone(man), binUrl = URL.createObjectURL(new Blob([bin]));
+    m.builds[0].parts[0].path = binUrl;
+    const manUrl = URL.createObjectURL(new Blob([JSON.stringify(m)], { type: 'application/json' }));
+    pinUrls = [binUrl, manUrl];
+    setManifest(manUrl, true);
+    msg.textContent = 'Siap! Tombol Install firmware (di sini dan di atas) memakai pin pilihanmu.';
+  } catch (e) {
+    fwBin = null;
+    if (my !== pinSeq) return;
+    msg.classList.add('bad');
+    msg.textContent = 'Gagal menyiapkan pin pilihanmu: ' + e.message + '. Pakai pin bawaan, atau beri tahu agreius.lab.';
+  }
+}
+pinSel.forEach(el => el.onchange = () => { pins[+el.dataset.i] = +el.value; pinApply(); });
+document.getElementById('pinReset').onclick = () => { pins = PIN_DEF.slice(); pinApply(); };
+pinApply();
 
 // Kopi developer: klik pertama mengisi cangkir (bercanda), lalu turun ke QRIS. Tanpa paksaan.
 const coffee = document.getElementById('coffee');
